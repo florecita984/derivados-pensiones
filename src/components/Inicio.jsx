@@ -3,6 +3,7 @@ import { calcPension, money } from '../lib/calc.js'
 import { comparar } from '../lib/comparar.js'
 import { area, curva } from '../lib/trazo.js'
 import { PERSONA_A, PERSONA_B } from '../lib/personas.js'
+import { compararInicio, RENDIMIENTO_BASE } from '../lib/ahorro.js'
 import Num from './Num.jsx'
 import Icon from './Icon.jsx'
 import LeyCards, { LeyTimeline } from './LeyCards.jsx'
@@ -133,6 +134,36 @@ function PanelEjemplo({ ra, rb }) {
   )
 }
 
+// Presentación de la sección Ahorra con una cifra real calculada con ahorro.js.
+function AhorraTeaser({ ir }) {
+  const r = useMemo(() => compararInicio({ aportacion: 1000, edad: 25, retiro: 65, tasaAnual: RENDIMIENTO_BASE }), [])
+  return (
+    <div className="teaser">
+      <div className="teaser-txt">
+        <Eyebrow>Nuevo · Ahorra</Eyebrow>
+        <h2>El tiempo también hace crecer tu dinero</h2>
+        <p>Simula cuánto cuesta posponer tu ahorro tres meses y pon a prueba tu intuición con cuatro retos.</p>
+        <button className="btn btn-primary" onClick={() => ir('ahorra')}>
+          Explorar Ahorra <Icon name="arrow" size={18} />
+        </button>
+      </div>
+      <div className="teaser-fig">
+        <dl>
+          <div>
+            <dt>Dejar de aportar 3 meses</dt>
+            <dd>{money(r.aportacionNoHecha)}</dd>
+          </div>
+          <div className="teaser-em">
+            <dt>Diferencia al retiro</dt>
+            <dd><Num value={r.dif.absoluta} /></dd>
+          </div>
+        </dl>
+        <p>$1,000 al mes desde los 25 hasta los 65, con rendimiento anual de {Math.round(RENDIMIENTO_BASE * 100)}%.</p>
+      </div>
+    </div>
+  )
+}
+
 export default function Inicio({ ir }) {
   // Series por edad de retiro (60 a 65): Persona A en Ley 73 y Persona B en Ley 97.
   const { ra, rb } = useMemo(
@@ -150,7 +181,7 @@ export default function Inicio({ ir }) {
         <div className="wrap hero-grid">
           <div className="hero-txt">
             <Eyebrow>Simulador comparativo · Tema 9</Eyebrow>
-            <h1>Compara tu pensión bajo la Ley 73 y la Ley 97</h1>
+            <h1>Compara tu pensión bajo la <span className="t73">Ley 73</span> y la <span className="t97">Ley 97</span></h1>
             <p className="hero-lead">
               Descubre qué ley te corresponde y cuánto podrías recibir al retirarte. Dos personas que trabajan lo mismo
               pueden obtener pensiones muy distintas.
@@ -236,6 +267,11 @@ export default function Inicio({ ir }) {
             </article>
           ))}
         </div>
+      </Reveal>
+
+      {/* ---------- Ahorra ---------- */}
+      <Reveal as="section" className="wrap section">
+        <AhorraTeaser ir={ir} />
       </Reveal>
 
       {/* ---------- Conceptos ---------- */}

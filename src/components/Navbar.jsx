@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Icon from './Icon.jsx'
 
 export function Logo() {
@@ -16,6 +16,20 @@ export function Logo() {
 export default function Navbar({ vistas, vista, ir }) {
   const [abierto, setAbierto] = useState(false)
   const [elevada, setElevada] = useState(false)
+  const links = useRef(null)
+  const [ind, setInd] = useState(null)
+
+  // Posición del indicador de la sección activa (se desliza entre enlaces en escritorio).
+  useLayoutEffect(() => {
+    const medir = () => {
+      const el = links.current?.querySelector('button.on')
+      setInd(el ? { x: el.offsetLeft, w: el.offsetWidth } : null)
+    }
+    medir()
+    window.addEventListener('resize', medir)
+    document.fonts?.ready.then(medir)
+    return () => window.removeEventListener('resize', medir)
+  }, [vista])
 
   // Cierra el menú móvil con Escape y marca la barra cuando se hace scroll.
   useEffect(() => {
@@ -46,7 +60,8 @@ export default function Navbar({ vistas, vista, ir }) {
           </span>
         </button>
 
-        <nav className={'links' + (abierto ? ' open' : '')} id="menu-principal" aria-label="Secciones">
+        <nav ref={links} className={'links' + (abierto ? ' open' : '')} id="menu-principal" aria-label="Secciones">
+          {ind && <span className="links-ind" aria-hidden="true" style={{ transform: `translateX(${ind.x}px)`, width: ind.w }} />}
           {vistas.map((v) => (
             <button
               key={v.id}
@@ -55,6 +70,7 @@ export default function Navbar({ vistas, vista, ir }) {
               onClick={() => navegar(v.id)}
             >
               {v.texto}
+              {v.nuevo && <span className="nuevo">Nuevo</span>}
             </button>
           ))}
         </nav>

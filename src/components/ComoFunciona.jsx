@@ -35,7 +35,7 @@ export default function ComoFunciona() {
             </thead>
             <tbody>
               {FILAS.map(([t, a, b]) => (
-                <tr key={t}><th scope="row">{t}</th><td>{a}</td><td>{b}</td></tr>
+                <tr key={t}><th scope="row">{t}</th><td data-ley="Ley 73">{a}</td><td data-ley="Ley 97">{b}</td></tr>
               ))}
             </tbody>
           </table>

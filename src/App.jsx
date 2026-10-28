@@ -5,12 +5,14 @@ import Inicio from './components/Inicio.jsx'
 import MiPension from './components/MiPension.jsx'
 import Modalidad40 from './components/Modalidad40.jsx'
 import ComoFunciona from './components/ComoFunciona.jsx'
+import Ahorra from './components/Ahorra.jsx'
 
 const VISTAS = [
   { id: 'inicio', texto: 'Inicio' },
   { id: 'simulador', texto: 'Simulador' },
   { id: 'modalidad-40', texto: 'Modalidad 40' },
   { id: 'aprende', texto: 'Aprende' },
+  { id: 'ahorra', texto: 'Ahorra', nuevo: true },
 ]
 
 const desdeHash = () => {
@@ -32,6 +34,8 @@ export default function App() {
 
   useEffect(() => {
     const alCambiar = () => {
+      // Los anclajes internos (p. ej. "Saltar al contenido") no son rutas: no cambian la vista.
+      if (window.location.hash && !window.location.hash.startsWith('#/')) return
       setVista(desdeHash())
       window.scrollTo({ top: 0 })
     }
@@ -59,6 +63,7 @@ export default function App() {
         <div hidden={vista !== 'simulador'}><MiPension key={reto.key} inicial={reto.datos} /></div>
         <div hidden={vista !== 'modalidad-40'}><Modalidad40 /></div>
         <div hidden={vista !== 'aprende'}><ComoFunciona /></div>
+        <div hidden={vista !== 'ahorra'}><Ahorra /></div>
       </main>
 
       <Footer vistas={VISTAS} ir={ir} />

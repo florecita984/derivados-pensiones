@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { money } from '../lib/calc.js'
 
 // Número que se anima suavemente hasta su nuevo valor (respeta "reducir movimiento").
-export default function Num({ value, format = money, ms = 600 }) {
-  const [shown, setShown] = useState(value)
-  const from = useRef(value)
+// desde = valor inicial opcional para contar desde ahí al montarse (p. ej. 0 al revelar un resultado).
+export default function Num({ value, format = money, ms = 600, desde }) {
+  const [shown, setShown] = useState(desde ?? value)
+  const from = useRef(desde ?? value)
 
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches

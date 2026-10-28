@@ -183,7 +183,7 @@ export default function MiPension({ inicial }) {
             <div className="panel-h">
               <div>
                 <h2 id="t-chart">Pensión según la edad de retiro</h2>
-                <p>Pasa el cursor o toca una barra para ver el detalle.</p>
+                <p>Pasa el cursor o toca un punto para ver el detalle.</p>
               </div>
             </div>
             <Chart rows={r.rows} retiro={f.ret} />
