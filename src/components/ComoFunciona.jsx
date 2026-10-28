@@ -1,30 +1,26 @@
-import { useMemo, useState } from 'react'
 import Icon from './Icon.jsx'
-import LeyCards, { LeyTimeline } from './LeyCards.jsx'
-import { PageHeader, SectionHeader } from './ui.jsx'
-import { FILAS, FUENTES, GLOSARIO } from '../lib/contenido.js'
+import { PageHead, Reveal } from './ui.jsx'
+import { LEYES, FILAS, FUENTES, GLOSARIO } from '../lib/contenido.js'
 
 export default function ComoFunciona() {
-  const [q, setQ] = useState('')
-  const [abierto, setAbierto] = useState(0)
-
-  const terminos = useMemo(() => {
-    const t = q.trim().toLowerCase()
-    return t ? GLOSARIO.filter(([n, d]) => (n + ' ' + d).toLowerCase().includes(t)) : GLOSARIO
-  }, [q])
-
   return (
     <div className="page wrap">
-      <PageHeader eyebrow="Aprende" title="Ley 73 vs. Ley 97 en una frase">
-        Lo esencial para entender cómo se calcula cada pensión, sin tecnicismos.
-      </PageHeader>
+      <PageHead chip="Aprende" title="Ley 73 vs. Ley 97 en una frase" />
 
-      <LeyTimeline />
-      <LeyCards definicion />
+      <div className="laws">
+        {LEYES.map((l) => (
+          <article key={l.id} className={'law law-' + l.id}>
+            <span className="law-tag">{l.tag}</span>
+            <h2>{l.nombre}</h2>
+            <b>{l.lema}</b>
+            <p>{l.definicion}</p>
+          </article>
+        ))}
+      </div>
 
-      <section className="section-s">
-        <SectionHeader title="Comparación rápida" />
-        <div className="panel tw">
+      <Reveal as="section" className="sec" aria-labelledby="t-comp">
+        <h2 id="t-comp" className="h-sec">Comparación rápida</h2>
+        <div className="card tw">
           <table>
             <thead>
               <tr>
@@ -40,49 +36,25 @@ export default function ComoFunciona() {
             </tbody>
           </table>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="section-s">
-        <SectionHeader title="Glosario">Consulta el significado de los términos más usados.</SectionHeader>
-        <label className="search">
-          <Icon name="search" size={18} />
-          <input
-            type="search"
-            placeholder="Buscar un término"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            aria-label="Buscar en el glosario"
-          />
-        </label>
-        <div className="acc">
-          {terminos.map(([t, d, icon], i) => {
-            const open = q.trim() ? true : abierto === i
-            return (
-              <div className={'acc-i' + (open ? ' open' : '')} key={t}>
-                <button
-                  className="acc-b"
-                  aria-expanded={open}
-                  onClick={() => setAbierto(open && !q.trim() ? -1 : i)}
-                >
-                  <span className="ico"><Icon name={icon} size={18} /></span>
-                  <span>{t}</span>
-                  <Icon name="down" size={18} className="chev" />
-                </button>
-                {open && <p className="acc-p">{d}</p>}
-              </div>
-            )
-          })}
-          {terminos.length === 0 && <p className="empty">No encontramos ese término. Prueba con otra palabra.</p>}
+      <Reveal as="section" className="sec" aria-labelledby="t-glo">
+        <h2 id="t-glo" className="h-sec">Glosario</h2>
+        <div className="glo">
+          {GLOSARIO.map(([t, d, icon]) => (
+            <article className="glo-i" key={t}>
+              <span className="glo-ico"><Icon name={icon} size={22} /></span>
+              <h3>{t}</h3>
+              <p>{d}</p>
+            </article>
+          ))}
         </div>
-      </section>
+      </Reveal>
 
-      <section className="section-s">
-        <SectionHeader title="Fuentes" />
-        <div className="panel src">
-          <span className="ico"><Icon name="file" size={20} /></span>
-          <p>{FUENTES}</p>
-        </div>
-      </section>
+      <details className="more">
+        <summary>Fuentes</summary>
+        <p>{FUENTES}</p>
+      </details>
     </div>
   )
 }

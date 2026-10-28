@@ -1,14 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Icon from './Icon.jsx'
 
-export function Logo() {
+export function Logo({ size = 38 }) {
   return (
-    <svg className="logo" width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-      <rect width="36" height="36" rx="10" fill="#0b1f3f" />
-      <rect x="9" y="19" width="5" height="9" rx="1.5" fill="#ffffff" opacity=".55" />
-      <rect x="15.5" y="14" width="5" height="14" rx="1.5" fill="#ffffff" opacity=".8" />
-      <rect x="22" y="8" width="5" height="20" rx="1.5" fill="#ffffff" />
-      <circle cx="26" cy="8" r="2.4" fill="#c9a24a" />
+    <svg className="logo" width={size} height={size} viewBox="0 0 36 36" aria-hidden="true">
+      <rect width="36" height="36" rx="11" fill="#0a1b3d" />
+      <rect x="8" y="17" width="8" height="11" rx="2.4" fill="#2f6bff" />
+      <rect x="20" y="9" width="8" height="19" rx="2.4" fill="#ff9f1c" />
     </svg>
   )
 }
@@ -54,10 +52,7 @@ export default function Navbar({ vistas, vista, ir }) {
       <div className="nav-in">
         <button className="brand" onClick={() => navegar('inicio')} aria-label="Pensiones IMSS, ir al inicio">
           <Logo />
-          <span className="brand-t">
-            <strong>Pensiones IMSS</strong>
-            <small>Ley 73 · Ley 97</small>
-          </span>
+          <strong>Pensiones IMSS</strong>
         </button>
 
         <nav ref={links} className={'links' + (abierto ? ' open' : '')} id="menu-principal" aria-label="Secciones">
@@ -70,14 +65,14 @@ export default function Navbar({ vistas, vista, ir }) {
               onClick={() => navegar(v.id)}
             >
               {v.texto}
-              {v.nuevo && <span className="nuevo">Nuevo</span>}
             </button>
           ))}
         </nav>
 
         <div className="nav-cta">
-          <button className="btn btn-primary btn-sm cta-desk" onClick={() => navegar('simulador')}>
-            Iniciar simulación
+          <button className="btn btn-blue btn-sm cta-desk" onClick={() => navegar('simulador')}>
+            Simular
+            <Icon name="arrow" size={16} strokeWidth={2.4} />
           </button>
           <button
             className="burger"

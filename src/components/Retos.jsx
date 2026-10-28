@@ -46,12 +46,11 @@ export default function Retos({ onProbar }) {
             )
           })}
         </ol>
-        <span className="quiz-count">{terminado ? 'Completado' : `Reto ${idx + 1} de ${RETOS.length}`}</span>
         <span className="quiz-score" aria-live="polite">
           <Icon name="target" size={16} />
-          {aciertos} / {RETOS.length} aciertos
+          {aciertos} / {RETOS.length}
         </span>
-        <button className="icon-btn" onClick={reiniciar} aria-label="Reiniciar retos" title="Reiniciar retos">
+        <button className="icon-btn icon-btn-l" onClick={reiniciar} aria-label="Reiniciar retos" title="Reiniciar retos">
           <Icon name="rotate" size={17} />
         </button>
       </div>
@@ -60,78 +59,67 @@ export default function Retos({ onProbar }) {
         <div className="quiz-end" key="fin">
           <span className="quiz-end-n">{aciertos}<small>/{RETOS.length}</small></span>
           <div>
-            <h3>{aciertos === RETOS.length ? 'Intuición financiera impecable' : aciertos >= 2 ? 'Buen instinto' : 'El tiempo sorprende a casi todos'}</h3>
-            <p>La idea que conecta los cuatro retos: el dinero que se invierte antes tiene más tiempo para generar rendimientos sobre rendimientos.</p>
-            <button className="btn btn-primary" onClick={reiniciar}><Icon name="rotate" size={17} />Reiniciar los retos</button>
+            <h3>{aciertos === RETOS.length ? 'Intuición impecable' : aciertos >= 2 ? 'Buen instinto' : 'El tiempo sorprende a casi todos'}</h3>
+            <p>Lo que une los cuatro retos: el dinero que entra antes tiene más tiempo para ganar intereses sobre intereses.</p>
+            <button className="btn btn-blue" onClick={reiniciar}><Icon name="rotate" size={17} />Jugar de nuevo</button>
           </div>
         </div>
       ) : (
         <div className="quiz-body" key={reto.id}>
-          <div className="quiz-q">
-            <span className="eyebrow">Reto {idx + 1} · {reto.titulo}</span>
-            <h3>{reto.pregunta}</h3>
-            <dl className="quiz-data">
-              {reto.datos.map(([k, v]) => (
-                <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
-              ))}
-            </dl>
-          </div>
+          <span className="quiz-n">Reto {idx + 1} · {reto.titulo}</span>
+          <h3 className="quiz-q">{reto.pregunta}</h3>
+          <ul className="chips">
+            {reto.datos.map(([k, v]) => (
+              <li key={k}><small>{k}</small><b>{v}</b></li>
+            ))}
+          </ul>
 
-          <div className="quiz-a">
-            <div className="quiz-opts" role="group" aria-label="Opciones de respuesta">
-              {reto.opciones.map((o, i) => {
-                const sel = eleccion === o.id
-                const cls = revelado ? (o.id === res.correcta ? ' good' : sel ? ' bad' : ' dim') : sel ? ' sel' : ''
-                return (
-                  <button
-                    key={o.id}
-                    aria-pressed={sel}
-                    className={'opt' + cls}
-                    disabled={revelado}
-                    onClick={() => setEleccion(o.id)}
-                  >
-                    <span className="opt-k">{String.fromCharCode(65 + i)}</span>
-                    <span className="opt-t">{o.texto}</span>
-                    {revelado && o.id === res.correcta && <Icon name="check" size={18} strokeWidth={2.6} />}
-                    {revelado && sel && o.id !== res.correcta && <Icon name="x" size={18} strokeWidth={2.4} />}
-                  </button>
-                )
-              })}
-            </div>
-
-            {!revelado ? (
-              <div className="quiz-act">
-                <button className="btn btn-primary" onClick={revelar} disabled={!eleccion}>
-                  Revelar resultado
+          <div className={'opts opts-' + reto.opciones.length} role="group" aria-label="Opciones de respuesta">
+            {reto.opciones.map((o, i) => {
+              const sel = eleccion === o.id
+              const cls = revelado ? (o.id === res.correcta ? ' good' : sel ? ' bad' : ' dim') : sel ? ' sel' : ''
+              return (
+                <button key={o.id} aria-pressed={sel} className={'opt' + cls} disabled={revelado} onClick={() => setEleccion(o.id)}>
+                  <span className="opt-k">{String.fromCharCode(65 + i)}</span>
+                  <span className="opt-t">{o.texto}</span>
+                  {revelado && o.id === res.correcta && <Icon name="check" size={20} strokeWidth={2.8} />}
+                  {revelado && sel && o.id !== res.correcta && <Icon name="x" size={20} strokeWidth={2.6} />}
                 </button>
-                <small>{eleccion ? 'Listo para comprobar.' : 'Elige una opción para continuar.'}</small>
-              </div>
-            ) : (
-              <div className="quiz-res" aria-live="polite">
-                <p className={'quiz-verdict ' + (eleccion === res.correcta ? 'ok' : 'no')}>
-                  <Icon name={eleccion === res.correcta ? 'check' : 'info'} size={18} strokeWidth={2.4} />
-                  {eleccion === res.correcta ? '¡Correcto!' : 'No exactamente.'}
-                </p>
-                <div className="quiz-bars">
-                  {res.barras.map((b) => (
-                    <div className="qb" key={b.nombre}>
-                      <div className="qb-h"><span>{b.nombre}</span><b><Num value={b.valor} desde={0} ms={900} /></b></div>
-                      <div className="qb-t"><div className="qb-f" style={{ '--w': (b.valor / mx) * 100 + '%', background: b.color }} /></div>
-                    </div>
-                  ))}
-                </div>
-                <p className="quiz-exp">{res.explicacion}</p>
-                <div className="quiz-act">
-                  <button className="btn btn-primary" onClick={siguiente}>
-                    {idx === RETOS.length - 1 ? 'Ver mi resultado' : 'Siguiente reto'} <Icon name="arrow" size={17} />
-                  </button>
-                  <button className="btn btn-ghost" onClick={() => onProbar(reto.probar)}>
-                    <Icon name="sliders" size={17} />Probar con mis datos
-                  </button>
-                </div>
-              </div>
-            )}
+              )
+            })}
           </div>
+
+          {!revelado ? (
+            <div className="quiz-act">
+              <button className="btn btn-ink" onClick={revelar} disabled={!eleccion}>
+                Revelar resultado
+              </button>
+            </div>
+          ) : (
+            <div className="quiz-res" aria-live="polite">
+              <p className={'quiz-verdict ' + (eleccion === res.correcta ? 'ok' : 'no')}>
+                <Icon name={eleccion === res.correcta ? 'check' : 'info'} size={20} strokeWidth={2.6} />
+                {eleccion === res.correcta ? '¡Correcto!' : 'No exactamente'}
+              </p>
+              <div className="quiz-bars">
+                {res.barras.map((b) => (
+                  <div className="qb" key={b.nombre}>
+                    <div className="qb-h"><span>{b.nombre}</span><b><Num value={b.valor} desde={0} ms={900} /></b></div>
+                    <div className="qb-t"><div className="qb-f" style={{ '--w': (b.valor / mx) * 100 + '%', background: b.color }} /></div>
+                  </div>
+                ))}
+              </div>
+              <p className="quiz-exp">{res.explicacion}</p>
+              <div className="quiz-act">
+                <button className="btn btn-blue" onClick={siguiente}>
+                  {idx === RETOS.length - 1 ? 'Ver mi resultado' : 'Siguiente reto'} <Icon name="arrow" size={17} />
+                </button>
+                <button className="btn btn-line" onClick={() => onProbar(reto.probar)}>
+                  <Icon name="sliders" size={17} />Probar con mis datos
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

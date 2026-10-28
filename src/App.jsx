@@ -10,9 +10,9 @@ import Ahorra from './components/Ahorra.jsx'
 const VISTAS = [
   { id: 'inicio', texto: 'Inicio' },
   { id: 'simulador', texto: 'Simulador' },
+  { id: 'ahorra', texto: 'Ahorra' },
   { id: 'modalidad-40', texto: 'Modalidad 40' },
   { id: 'aprende', texto: 'Aprende' },
-  { id: 'ahorra', texto: 'Ahorra', nuevo: true },
 ]
 
 const desdeHash = () => {

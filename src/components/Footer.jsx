@@ -5,40 +5,26 @@ export default function Footer({ vistas, ir }) {
     <footer className="foot">
       <div className="foot-in">
         <div className="foot-brand">
-          <div className="foot-logo">
-            <Logo />
+          <Logo size={34} />
+          <div>
             <strong>Pensiones IMSS</strong>
+            <small>Tema 9 · Equipo 2</small>
           </div>
-          <p>Simulador comparativo de la pensión bajo la Ley 73 y la Ley 97. Proyecto académico del Tema 9.</p>
         </div>
 
-        <div>
-          <h4>Secciones</h4>
-          <ul>
-            {vistas.map((v) => (
-              <li key={v.id}><button onClick={() => ir(v.id)}>{v.texto}</button></li>
-            ))}
-          </ul>
-        </div>
+        <ul className="foot-links">
+          {vistas.map((v) => (
+            <li key={v.id}><button onClick={() => ir(v.id)}>{v.texto}</button></li>
+          ))}
+        </ul>
 
-        <div>
-          <h4>Equipo 2</h4>
-          <ul className="foot-team">
-            <li>Lucía Cárdenas</li>
-            <li>Flor Martínez</li>
-            <li>Carlos Contreras</li>
-            <li>Carlos Ipiña</li>
-            <li>María José Meza</li>
-          </ul>
-        </div>
+        <p className="foot-team">
+          Lucía Cárdenas · Flor Martínez · Carlos Contreras · Carlos Ipiña · María José Meza
+        </p>
       </div>
-      <div className="foot-legal">
-        <div className="foot-in">
-          <p>
-            <b>Simulación didáctica, no es asesoría financiera.</b> Las cifras son estimaciones; confirma montos, topes y parámetros directamente en el IMSS y la CONSAR.
-          </p>
-        </div>
-      </div>
+      <p className="foot-legal">
+        <b>Simulación didáctica, no es asesoría financiera.</b> Confirma montos y topes en el IMSS y la CONSAR.
+      </p>
     </footer>
   )
 }

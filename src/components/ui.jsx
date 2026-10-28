@@ -37,67 +37,42 @@ export function Reveal({ as: Tag = 'div', className = '', children, ...resto }) 
   )
 }
 
-// Piezas de interfaz reutilizables para mantener una identidad visual consistente.
-
-export function Eyebrow({ children }) {
-  return <span className="eyebrow">{children}</span>
+// Etiqueta pequeña sobre los títulos.
+export function Chip({ children, tone = 'blue' }) {
+  return <span className={'chip chip-' + tone}>{children}</span>
 }
 
-export function SectionHeader({ eyebrow, title, children }) {
+// Encabezado de página: etiqueta, título y una línea opcional.
+export function PageHead({ chip, title, children }) {
   return (
-    <div className="sec-head">
-      {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-      <h2>{title}</h2>
-      {children && <p>{children}</p>}
-    </div>
-  )
-}
-
-export function PageHeader({ eyebrow, title, children }) {
-  return (
-    <header className="page-head">
-      {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+    <header className="ph">
+      {chip && <Chip>{chip}</Chip>}
       <h1>{title}</h1>
       {children && <p>{children}</p>}
     </header>
   )
 }
 
-const ICONO_TONO = { info: 'info', warn: 'alert', gold: 'info', ok: 'check' }
-
-// Aviso destacado: tonos info, warn, gold (nota de estimación) y ok.
-export function Callout({ tone = 'info', title, children }) {
+// Diferencia entre ambas pensiones (valores derivados de los resultados ya calculados).
+export function DiffPill({ cmp }) {
+  const { mayor, diff, veces } = cmp
   return (
-    <div className={'callout callout-' + tone} role={tone === 'warn' ? 'alert' : 'note'}>
-      <Icon name={ICONO_TONO[tone]} size={20} className="callout-i" />
-      <div>
-        {title && <strong>{title}</strong>}
-        <p>{children}</p>
-      </div>
+    <div className="diffp">
+      <span className="diffp-i"><Icon name="trend" size={20} /></span>
+      <p>
+        La <b>Ley {mayor}</b> paga <b className="pos">{money(diff)} más</b> al mes
+      </p>
+      {veces != null && <span className="diffp-x">{veces.toFixed(1)}×</span>}
     </div>
   )
 }
 
-// Insignia pequeña de régimen: "Ley 73" / "Ley 97".
-export function LeyBadge({ ley }) {
-  return <span className={'ley-badge ley-' + ley}>Ley {ley}</span>
-}
-
-// Diferencia entre ambas pensiones (valores derivados de los resultados ya calculados).
-export function DiffStrip({ cmp }) {
-  const { mayor, diff, pct, veces } = cmp
+// Aviso compacto (solo para advertencias que el usuario debe ver).
+export function Alerta({ children }) {
   return (
-    <div className="diff">
-      <span className="diff-i"><Icon name="trend" size={20} /></span>
-      <div className="diff-t">
-        <b>La Ley {mayor} paga más</b>
-        <small>Diferencia mensual estimada entre ambas pensiones</small>
-      </div>
-      <div className="diff-v">
-        <span className="delta delta-pos"><Icon name="up" size={14} strokeWidth={2.4} />{money(diff)} al mes</span>
-        {veces != null && <span className="delta delta-neutral">{veces.toFixed(1)} veces</span>}
-        {pct != null && <span className="delta delta-neutral">+{Math.round(pct)}%</span>}
-      </div>
+    <div className="alerta" role="alert">
+      <Icon name="alert" size={20} />
+      <p>{children}</p>
     </div>
   )
 }
