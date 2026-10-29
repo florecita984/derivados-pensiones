@@ -134,7 +134,7 @@ b { font-weight: 650; }
   column-gap: clamp(32px, 5vw, 72px);
 }
 .hero-texto { grid-area: texto; align-self: end; }
-.hero-escena { grid-area: escena; }
+.hero-escena { grid-area: escena; align-self: center; } /* no se estira cuando se abre el editor de la frase */
 .hero-acc { grid-area: acc; align-self: start; }
 .hero h1 { font-size: clamp(42px, 5.8vw, 76px); font-weight: 600; letter-spacing: -0.036em; line-height: 1; max-width: 13.5ch; }
 .hero-lead { margin-top: 20px; max-width: 44ch; font-size: clamp(17px, 1.5vw, 19px); line-height: 1.55; color: var(--tinta-2); }
