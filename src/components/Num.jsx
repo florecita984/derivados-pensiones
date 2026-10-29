@@ -1,13 +1,30 @@
 import { useEffect, useRef, useState } from 'react'
-import { money } from '../lib/calc.js'
+import { money } from '../lib/formato.js'
 
 // Número que se anima suavemente hasta su nuevo valor (respeta "reducir movimiento").
-// desde = valor inicial opcional para contar desde ahí al montarse (p. ej. 0 al revelar un resultado).
-export default function Num({ value, format = money, ms = 600, desde }) {
+// desde = valor inicial para contar desde ahí; esa primera cuenta espera a que el número se vea en pantalla.
+export default function Num({ value, format = money, ms = 650, desde }) {
   const [shown, setShown] = useState(desde ?? value)
   const from = useRef(desde ?? value)
+  const caja = useRef(null)
+  const [listo, setListo] = useState(desde == null)
 
   useEffect(() => {
+    if (listo) return
+    const el = caja.current
+    if (!el || typeof IntersectionObserver === 'undefined') return setListo(true)
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        setListo(true)
+        io.disconnect()
+      }
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [listo])
+
+  useEffect(() => {
+    if (!listo) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce || from.current === value) {
       from.current = value
@@ -27,7 +44,13 @@ export default function Num({ value, format = money, ms = 600, desde }) {
     }
     raf = requestAnimationFrame(paso)
     return () => cancelAnimationFrame(raf)
-  }, [value, ms])
+  }, [value, ms, listo])
 
-  return <>{format(shown)}</>
+  // La cifra que se anima es solo visual; los lectores de pantalla reciben el valor final una vez.
+  return (
+    <span ref={caja} className="num">
+      <span aria-hidden="true">{format(shown)}</span>
+      <span className="sr">{format(value)}</span>
+    </span>
+  )
 }

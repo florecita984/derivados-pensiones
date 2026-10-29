@@ -1,51 +1,78 @@
-// Textos compartidos entre Inicio y Aprende.
+// Textos de la página. Las definiciones, el aviso, las fuentes y los supuestos son los de la
+// calculadora de referencia (pension_ley73_vs_ley97.html), con la misma redacción.
+import { money } from './formato.js'
+import { P, TOPE } from './pension.js'
 
-export const LEYES = [
-  {
-    id: '73',
-    icon: 'landmark',
-    tag: 'Antes del 1 de julio de 1997',
-    nombre: 'Ley 73',
-    lema: 'Se basa en tu salario',
-    definicion:
-      'El IMSS te paga una pensión calculada con tu sueldo de los últimos 5 años y tus semanas trabajadas. Es como un sueldo de jubilado que se paga entre todos. Aplica a quien empezó a cotizar antes del 1 de julio de 1997.',
-    puntos: [
-      'El IMSS calcula la pensión con el sueldo de los últimos 5 años.',
-      'Requiere un mínimo de 500 semanas cotizadas.',
-      'Funciona como un sueldo de jubilado financiado entre todos.',
-    ],
-  },
-  {
-    id: '97',
-    icon: 'wallet',
-    tag: 'Desde el 1 de julio de 1997',
-    nombre: 'Ley 97',
-    lema: 'Se basa en tu ahorro',
-    definicion:
-      'Tu pensión sale de tu propio ahorro en la Afore. Entre más ahorras y más años pasan, más crece. Si tu ahorro es muy bajo, el gobierno te garantiza una pensión mínima.',
-    puntos: [
-      'La pensión proviene de lo acumulado en la Afore.',
-      'Requiere 875 semanas en 2026 (aumenta hasta 1,000).',
-      'Si el ahorro es muy bajo, el gobierno garantiza una pensión mínima.',
-    ],
-  },
+export const LEY_EN_UNA_FRASE = {
+  73: 'El IMSS te paga una pensión calculada con tu sueldo de los últimos 5 años y tus semanas trabajadas. Es como un sueldo de jubilado que se paga entre todos. Aplica a quien empezó a cotizar antes del 1 de julio de 1997.',
+  97: 'Tu pensión sale de tu propio ahorro en la Afore. Entre más ahorras y más años pasan, más crece. Si tu ahorro es muy bajo, el gobierno te garantiza una pensión mínima.',
+}
+
+export const GLOSARIO = {
+  uma: 'Unidad de Medida y Actualización. Un valor en pesos que el gobierno usa como regla para topes y cuotas. En 2026 vale $117.31 al día.',
+  semanas: 'Las semanas en que tu patrón (o tú) pagó al IMSS por ti. Piden mínimo 500 en la Ley 73 y 875 en la Ley 97 durante 2026 (sube 25 por año hasta 1,000).',
+  afore: 'La cuenta donde se junta tu ahorro para el retiro. La administra una empresa y rinde intereses.',
+  sbc: 'El sueldo con el que el IMSS te registra. Tiene tope de 25 UMA.',
+  interes: 'Cuando los intereses que ganas también generan intereses. Por eso ahorrar desde joven rinde tanto: el tiempo trabaja por ti.',
+  garantizada: 'La pensión mínima que el gobierno completa si tu Afore no alcanza.',
+}
+
+// Explicación bajo cada pregunta del simulador.
+export const AYUDA = {
+  sbc: `El sueldo con el que cotizas en el IMSS, el de tu nómina antes de descuentos. El IMSS registra mínimo 1 salario mínimo (${money(P.sm)}) y toma máximo 25 UMA (${money(TOPE)}); fuera de ese rango calculamos con el límite.`,
+  ini: 'Esto decide qué ley te toca. Usamos la ley de hoy: no podemos pronosticar cambios futuros.',
+  ret: 'Desde los 60 años. Antes de los 65 te pagan menos en la Ley 73 (5% menos por cada año que te adelantes); si te retiras después de los 65, tu pensión sube.',
+  aho: 'La Afore es la cuenta donde se guarda tu ahorro para el retiro. Si no lo sabes, déjalo en $0 y lo estimamos.',
+  esp: 'Ley 73: suma 15% a la pensión.',
+  hij: 'Menores de 16 años, hasta 25 si estudian, o con discapacidad. Ley 73: +10% por cada uno.',
+  pad: 'Solo cuentan si no tienes esposa(o) ni hijos: +10% por cada uno (y +10% más si es solo uno). Si no tienes a nadie, la ley da una ayuda asistencial de 15%. En la Ley 97 tu familia no cambia el monto.',
+  u: `Para calcular usamos mínimo 1 salario mínimo (${money(P.sm)}): si pones menos, calculamos con esa cantidad. Solo cuenta hasta 25 UMA (${money(TOPE)}).`,
+  sem: '52 semanas = 1 año, 104 = 2 años, 156 = 3 años y así. Mínimo 52 semanas en los últimos 5 años para entrar a Modalidad 40; para pensionarte en Ley 73 necesitas 500 en total.',
+  m: 'Las fuentes consultadas no marcan un mínimo de años. Tu pensión se calcula con tus últimas 250 semanas (unos 5 años), así que más de 5 años ya solo suma semanas.',
+  rt: 'Por ejemplo 5% anual. A más rendimiento, más riesgo; nada está garantizado.',
+  inf: 'Sirve para ver cuánto valdría ese dinero en pesos de hoy.',
+}
+
+export const SUPUESTOS =
+  'UMA 2026: $3,566.22 al mes. Salario mínimo 2026: $315.04 diarios. Tu sueldo sube 4.5% al año; UMA y salario mínimo, 3.5%; tu Afore rinde 7% anual. Las cifras están en pesos del año en que te retiras, no en pesos de hoy. En la Ley 73 la pensión con asignaciones no pasa de tu sueldo promedio (ajuste del art. 169). En la Ley 97 el factor de anualidad es exacto solo a los 61, 62 y 64 años; en las demás edades es una estimación. La pensión mínima de la Ley 73 es 1 salario mínimo más 11% del decreto (unos $10,637 en 2026). La pensión garantizada de la Ley 97 sale de una tabla del art. 170 (de $3,540.56 a $11,128.01 en 2026): aquí es una aproximación según edad, semanas y sueldo. Es una simulación didáctica, no una asesoría.'
+
+export const M40_TEXTOS = {
+  intro:
+    'Es seguir pagando al IMSS por tu cuenta cuando dejas de trabajar, para juntar semanas y subir tu pensión (aplica a la Ley 73). Para entrar necesitas estar dado de baja del IMSS y tener al menos 52 semanas cotizadas en los últimos 5 años.',
+  antes: 'Podías elegir un sueldo de hasta 25 UMA (unos $89,000 al mes) y hasta registrarte con fechas pasadas.',
+  ahora: 'Solo tu último sueldo registrado, o ese más 1 UMA. Sin fechas pasadas y el trámite es digital.',
+  inscritos:
+    'Quien ya estaba inscrito antes del 22 de octubre conserva sus condiciones hasta terminar el periodo que contrató. El IMSS revisará en 6 meses si el esquema sigue.',
+  como:
+    'Pensión a los 65 años, en pesos de hoy, con la fórmula de la Ley 73 sobre el promedio de tus últimos 5 años de sueldo (250 semanas). Nunca baja de la pensión mínima garantizada de la Ley 73 (1 salario mínimo + 11% del decreto, unos $10,637 en 2026). Cuota mensual 2026: 14.438% del sueldo con que te registras (sube hasta 18.80% en 2030). No incluimos asignaciones familiares.',
+}
+
+export const AVISO_INTRO =
+  'Esta página es una simulación didáctica. Las calculadoras de CONSAR y de las Afores usan otros supuestos, por eso no darán el mismo número:'
+
+export const AVISO = [
+  ['Pesos', 'CONSAR muestra el monto en pesos de hoy. Aquí se muestra en pesos del año en que te retiras. Para comparar, divide entre 1.035 elevado a los años que faltan (3.5% de inflación).'],
+  ['Rendimiento', 'CONSAR usa 4% real y descuenta la comisión de la Afore (0.55% anual en 2025). Aquí son 7% nominal y sin comisión.'],
+  ['Sueldo', 'CONSAR no lo aumenta; aquí sube 4.5% al año.'],
+  ['Constancia', 'CONSAR supone que cotizas 80% del tiempo; aquí, 100%.'],
+  ['Anualidad', 'CONSAR calcula la renta solo para el titular, con tablas de mortalidad y un margen de seguridad de 2%. Aquí usamos un factor del curso que incluye beneficiarios, y solo es exacto a los 61, 62 y 64 años.'],
+  ['Subcuentas', 'No sumamos vivienda (Infonavit) ni cuota social (para quien gana hasta 4.01 UMA).'],
+  ['Pensión garantizada de la Ley 97', 'Es una aproximación; la tabla oficial cruza edad, semanas y sueldo.'],
+  ['El 11%', 'Se aplica solo a la pensión mínima de la Ley 73.'],
 ]
 
-export const FILAS = [
-  ['¿A quién le toca?', 'A quien empezó a cotizar antes del 1 de julio de 1997.', 'A quien empezó a cotizar a partir del 1 de julio de 1997.'],
-  ['¿De dónde sale la pensión?', 'De una fórmula con tu sueldo promedio de los últimos 5 años y tus semanas cotizadas.', 'Del ahorro acumulado en tu Afore y sus rendimientos.'],
-  ['Semanas mínimas', '500.', '875 en 2026 (sube 25 por año hasta llegar a 1,000).'],
-  ['Edad de retiro', '65 años. Desde los 60 se puede, con 5% menos por cada año que te adelantes.', 'Entre los 60 y los 65 años; mientras más tarde, mayor es tu ahorro.'],
-  ['Pensión mínima', 'Nunca baja de 1 salario mínimo.', 'Pensión garantizada si tu ahorro no alcanza.'],
+export const FUENTES = [
+  'Acuerdo ACDO.AS2.HCT.101026/302.P.DG del Consejo Técnico del IMSS, publicado en el DOF el 21-oct-2026 (Modalidad 40).',
+  'Notas: El Financiero y Infobae (21-oct-2026), Canitas (oct-2026).',
+  'UMA 2026: INEGI, DOF del 9-ene-2026.',
+  'Salario mínimo 2026: $315.04 diarios (zona general).',
+  'Asignaciones familiares y ayuda asistencial (Ley 73): IMSS y art. 164 de la Ley del Seguro Social de 1973.',
+  'Requisitos de Modalidad 40 (52 semanas en los últimos 5 años, tope de 25 UMA): IMSS, UnoTV y Expansión (2025-2026).',
+  'Semanas mínimas de la Ley 97 (875 en 2026, 1,000 en 2031): reforma de 2020, artículo cuarto transitorio; Expansión y UnoTV (2026).',
+  'Ley del Seguro Social, arts. 167 y 168 (Ley 73) y 170 (Ley 97).',
+  'Porcentajes por retiro anticipado (art. 171): IMSS y UnoTV (2026).',
+  'Pensión mínima Ley 73 (art. 168; 1 salario mínimo + 11% del decreto): HaceCuentas y UnoTV (2026).',
+  'Pensión garantizada Ley 97, de $3,540.56 a $11,128.01 en 2026: El Contribuyente y Cronista (2026).',
+  'Metodología de la proyección de la Ley 97 (Afore SURA, 2025, alineada con CONSAR): 4% real, comisión de 0.55%, constancia de 80%, margen de seguridad de 2%.',
+  'Material y especificaciones del curso.',
 ]
-
-export const GLOSARIO = [
-  ['UMA', 'Unidad de Medida y Actualización. Un valor en pesos que el gobierno usa como regla para topes y cuotas. En 2026 vale $117.31 al día.', 'landmark'],
-  ['Semanas cotizadas', 'Las semanas en que tu patrón (o tú) pagó al IMSS por ti. Piden mínimo 500 en la Ley 73 y 875 en la Ley 97 durante 2026 (sube 25 por año hasta 1,000).', 'clock'],
-  ['Afore', 'La cuenta donde se junta tu ahorro para el retiro. La administra una empresa y rinde intereses.', 'wallet'],
-  ['Sueldo base de cotización', 'El sueldo con el que el IMSS te registra. Tiene tope de 25 UMA.', 'user'],
-  ['Pensión garantizada', 'La pensión mínima que el gobierno completa si tu Afore no alcanza.', 'shield'],
-]
-
-export const FUENTES =
-  'Acuerdo ACDO.AS2.HCT.101026/302.P.DG del Consejo Técnico del IMSS, publicado en el DOF el 21-oct-2026 (Modalidad 40). Notas: El Financiero y Infobae (21-oct-2026), Canitas (oct-2026). UMA 2026: INEGI, DOF del 9-ene-2026. Salario mínimo 2026: $315.04 diarios (zona general). Ley del Seguro Social, arts. 167 y 168 (Ley 73) y 170 (Ley 97). Material y especificaciones del curso.'

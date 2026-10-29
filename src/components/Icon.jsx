@@ -63,8 +63,14 @@ const PATHS = {
   up: (<><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" /></>),
   down: (<><line x1="12" y1="5" x2="12" y2="19" /><polyline points="19 12 12 19 5 12" /></>),
   user: (<><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></>),
-  spark: <path d="M12 3l1.9 5.6 5.6 1.9-5.6 1.9L12 18l-1.9-5.6-5.6-1.9 5.6-1.9z" />,
   rotate: (<><polyline points="1 4 1 10 7 10" /><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" /></>),
+  help: (<><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><line x1="12" y1="17" x2="12.01" y2="17" /></>),
+  chevron: <polyline points="6 9 12 15 18 9" />,
+  next: <polyline points="9 18 15 12 9 6" />,
+  external: (<><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></>),
+  plus: (<><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></>),
+  minus: <line x1="5" y1="12" x2="19" y2="12" />,
+  pencil: (<><path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" /></>),
 }
 
 export default function Icon({ name, size = 20, className = '', strokeWidth = 1.8 }) {
@@ -81,6 +87,7 @@ export default function Icon({ name, size = 20, className = '', strokeWidth = 1.
       strokeLinejoin="round"
       aria-hidden="true"
       focusable="false"
+      data-icon={name}
     >
       {PATHS[name]}
     </svg>

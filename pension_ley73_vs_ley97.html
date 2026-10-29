@@ -4,260 +4,63 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>¿Cuánto me van a pagar de pensión? Ley 73 vs Ley 97</title>
-<meta name="description" content="Simulador interactivo que compara la pensión del IMSS bajo la Ley 73 y la Ley 97, con explicación sencilla de cada concepto y simulación de Modalidad 40.">
-<meta name="theme-color" content="#14233f">
-<meta property="og:title" content="¿Cuánto me van a pagar de pensión? Ley 73 vs Ley 97">
-<meta property="og:description" content="Mueve los controles y compara tu pensión bajo la Ley 73 y la Ley 97 del IMSS.">
-<meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314233f'/%3E%3Crect x='7' y='15' width='7' height='11' rx='1.5' fill='%2373a7f0'/%3E%3Crect x='18' y='8' width='7' height='18' rx='1.5' fill='%23f08a5d'/%3E%3C/svg%3E">
 <style>
-:root{
-  --bg:#f4f5f8;--card:#ffffff;--tx:#17202f;--mu:#5d6676;--bd:#e0e4eb;
-  --hd:#14233f;--hd-tx:#ffffff;--hd-mu:#b9c4d8;
-  --az:#1f5fbf;--na:#d4531c;--ok:#1f7a52;--wa:#8f5100;
-  --az-s:rgba(31,95,191,.08);--na-s:rgba(212,83,28,.08);--ok-s:rgba(31,122,82,.09);--wa-s:rgba(143,81,0,.09);
-  --sh:0 1px 2px rgba(20,35,63,.05),0 6px 20px -10px rgba(20,35,63,.16);
-  --r:14px;
-  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-}
-@media (prefers-color-scheme:dark){:root{
-  --bg:#0e1420;--card:#171f2e;--tx:#eef1f6;--mu:#9ba6b9;--bd:#2a3447;
-  --hd:#0a101b;--hd-tx:#ffffff;--hd-mu:#94a3bd;
-  --az:#6ba5f0;--na:#f58a5c;--ok:#5fc48c;--wa:#e8aa55;
-  --az-s:rgba(107,165,240,.12);--na-s:rgba(245,138,92,.12);--ok-s:rgba(95,196,140,.12);--wa-s:rgba(232,170,85,.12);
-  --sh:0 1px 2px rgba(0,0,0,.4),0 10px 26px -14px rgba(0,0,0,.7);
-}}
-
+:root{--bg:#f7f6f2;--card:#fff;--tx:#1f1f1c;--mu:#6b6a63;--bd:#e4e2da;--az:#2a78d6;--na:#eb6834;--ok:#2f8f5b;--wa:#a05a00}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--card:#22221f;--tx:#f1f0ea;--mu:#a3a199;--bd:#37362f;--az:#5a9bea;--na:#f08a5d;--ok:#5fc08a;--wa:#e0a24d}}
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{
-  margin:0;background:var(--bg);color:var(--tx);
-  font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  -webkit-font-smoothing:antialiased;
-}
-.w{max-width:1040px;margin:0 auto;padding:28px 20px 56px}
-
-/* ---------- Encabezado ---------- */
-.top{background:var(--hd);color:var(--hd-tx)}
-.top .in{max-width:1040px;margin:0 auto;padding:40px 20px 36px}
-.eyebrow{
-  display:inline-block;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--hd-mu);margin-bottom:14px;padding-bottom:6px;border-bottom:2px solid var(--na);
-}
-h1{
-  font-family:var(--serif);font-weight:700;letter-spacing:-.015em;
-  font-size:clamp(28px,5.4vw,42px);line-height:1.12;margin:0 0 12px;max-width:22ch;
-}
-.top .sub{color:var(--hd-mu);font-size:17px;margin:0;max-width:60ch}
-.top .lg{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.top .lg span{
-  display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
-  padding:6px 12px;border-radius:99px;border:1px solid rgba(255,255,255,.2);color:var(--hd-tx);
-}
-.top .lg i{width:10px;height:10px;border-radius:50%;display:inline-block}
-
-h2{font-family:var(--serif);font-size:21px;letter-spacing:-.005em;line-height:1.25;margin:0 0 6px}
-h3{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin:0 0 14px;display:flex;align-items:center;gap:10px}
-h3 b{
-  display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;
-  background:var(--hd);color:var(--hd-tx);font-size:12px;letter-spacing:0
-}
-.sub{color:var(--mu);font-size:15px;margin:0 0 14px}
-
-/* ---------- Navegación ---------- */
-.nav{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--bd);box-shadow:0 1px 0 rgba(20,35,63,.03)}
-.tabs{display:flex;gap:4px;max-width:1040px;margin:0 auto;padding:0 12px}
-.tabs button{
-  flex:1;padding:16px 8px 14px;border:0;border-bottom:3px solid transparent;background:transparent;
-  color:var(--mu);font:inherit;font-size:15px;font-weight:650;cursor:pointer;
-  transition:color .2s,border-color .2s,background .2s;
-}
-.tabs button:hover{color:var(--tx);background:var(--az-s)}
-.tabs button.on{color:var(--az);border-bottom-color:var(--az)}
-.tabs button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--az);outline-offset:2px}
-
-/* ---------- Tarjetas ---------- */
-section:not(.hide){animation:in .35s ease-out}
-@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.card{
-  background:var(--card);border:1px solid var(--bd);border-radius:var(--r);
-  padding:24px;margin-bottom:20px;box-shadow:var(--sh);
-}
-
-/* ---------- Distribución de "Mi pensión" ---------- */
-#t1:not(.hide){display:grid;grid-template-columns:minmax(0,1fr);gap:0}
-@media (min-width:920px){
-  #t1:not(.hide){grid-template-columns:minmax(0,5fr) minmax(0,6fr);column-gap:24px;align-items:start}
-  #t1 > .card:nth-child(1){grid-column:1;grid-row:1/3;position:sticky;top:76px}
-  #t1 > .card:nth-child(2){grid-column:2;grid-row:1}
-  #t1 > .card:nth-child(3){grid-column:2;grid-row:2}
-}
-#t2 > .card,#t3 > .card{max-width:780px;margin-left:auto;margin-right:auto}
-
-/* ---------- Controles ---------- */
-.grp + .grp{margin-top:26px;padding-top:24px;border-top:1px solid var(--bd)}
-.q{margin-bottom:22px}
-.grp .q:last-child{margin-bottom:0}
-.q label{
-  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
-  font-weight:650;font-size:15px;line-height:1.35;
-}
-.q label b{
-  color:var(--az);white-space:nowrap;font-variant-numeric:tabular-nums;
-  background:var(--az-s);padding:2px 10px;border-radius:6px;font-size:14px;
-}
-.q small{display:block;color:var(--mu);font-size:13px;margin:3px 0 2px;line-height:1.45}
-
-input[type=range]{
-  -webkit-appearance:none;appearance:none;width:100%;height:28px;margin:6px 0 0;background:transparent;cursor:pointer;
-}
-input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:var(--bd)}
-input[type=range]::-moz-range-track{height:6px;border-radius:99px;background:var(--bd)}
-input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:22px;height:22px;margin-top:-8px;border-radius:50%;
-  background:var(--az);border:3px solid var(--card);box-shadow:0 0 0 1px var(--az),0 2px 6px rgba(0,0,0,.25);
-  transition:transform .15s;
-}
-input[type=range]::-moz-range-thumb{
-  width:16px;height:16px;border-radius:50%;background:var(--az);border:3px solid var(--card);box-shadow:0 0 0 1px var(--az),0 2px 6px rgba(0,0,0,.25);
-}
-input[type=range]:hover::-webkit-slider-thumb,input[type=range]:active::-webkit-slider-thumb{transform:scale(1.12)}
-
-input[type=checkbox]{width:19px;height:19px;margin:0 10px 0 0;vertical-align:-4px;accent-color:var(--az);cursor:pointer}
-.q label span{font-weight:600}
-.q.chk{background:var(--az-s);border-radius:10px;padding:14px}
-
-/* ---------- Resultados ---------- */
-.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
-.res{
-  position:relative;border-radius:12px;padding:18px 16px 16px;
-  border:1px solid var(--bd);border-top:4px solid var(--bd);background:var(--card);
-  transition:border-color .25s,background .25s;
-}
-.res.l73{border-top-color:var(--az)}
-.res.l97{border-top-color:var(--na)}
-.res.tu{border-color:var(--ok);border-top-color:var(--ok);background:var(--ok-s)}
-.res .t{font-size:13px;color:var(--mu);line-height:1.4}
-.res .t:first-of-type{font-weight:700;color:var(--tx);font-size:14px}
-.res .n{
-  font-family:var(--serif);font-size:clamp(26px,5.5vw,36px);font-weight:700;
-  letter-spacing:-.015em;margin:6px 0 6px;font-variant-numeric:tabular-nums;line-height:1.1;
-}
-.badge{
-  display:inline-block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-  background:var(--ok);color:#fff;border-radius:4px;padding:3px 9px;margin-bottom:10px;
-}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:40px}
+.w{max-width:640px;margin:0 auto;padding:12px}
+h1{font-size:22px;margin:8px 0 2px}h2{font-size:17px;margin:0 0 6px}
+.sub{color:var(--mu);font-size:14px;margin:0 0 12px}
+.tabs{display:flex;gap:6px;margin:8px 0 12px;position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:5}
+.tabs button{flex:1;padding:10px 4px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-size:13px;font-weight:600}
+.tabs button.on{background:var(--tx);color:var(--bg)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+.q{margin-bottom:14px}.q label{display:flex;justify-content:space-between;font-weight:600;gap:8px}
+.q label b{color:var(--az);white-space:nowrap}.q small{display:block;color:var(--mu);font-size:13px}
+input[type=range]{width:100%;height:32px;accent-color:var(--az)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.res{border-radius:12px;padding:12px;border:2px solid var(--bd)}
+.res.tu{border-color:var(--ok)}
+.res .n{font-size:24px;font-weight:700}.res .t{font-size:13px;color:var(--mu)}
+.badge{display:inline-block;font-size:12px;background:var(--ok);color:#fff;border-radius:99px;padding:1px 8px;margin-bottom:4px}
 .l73 .n{color:var(--az)}.l97 .n{color:var(--na)}
-
-.msg{font-size:15px;margin:18px 0 0;padding:13px 16px;border-radius:10px;background:var(--az-s);border-left:4px solid var(--az)}
-.warn{color:var(--wa);font-size:14px;margin:12px 0 0;padding:13px 16px;border-radius:10px;background:var(--wa-s);border-left:4px solid var(--wa)}
-.msg:empty,.warn:empty{display:none}
-
-/* ---------- Gráficas ---------- */
-#chart{margin:8px 0 4px}
-#chart svg{display:block;overflow:visible}
-.bar{height:16px;border-radius:99px;margin:6px 0 18px;min-width:6px;transition:width .4s}
-#m40 > div:not(.bar){font-size:14.5px;line-height:1.45}
-
-/* ---------- Modalidad 40 ---------- */
-.ver{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0 24px}
-.ver div{border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.55}
-.ver div b{font-family:var(--serif);font-size:17px;display:inline-block;margin-bottom:2px}
-.ant{background:var(--na-s);border-left:4px solid var(--na)}
-.aho{background:var(--az-s);border-left:4px solid var(--az)}
-
-/* ---------- Tabla comparativa ---------- */
-.tw{overflow-x:auto;margin:16px -4px 0;padding:0 4px}
-table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:560px}
-th,td{text-align:left;padding:12px 14px;vertical-align:top;border-bottom:1px solid var(--bd)}
-thead th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);font-weight:700;border-bottom:2px solid var(--bd)}
-thead th.c73{color:var(--az);border-bottom-color:var(--az)}
-thead th.c97{color:var(--na);border-bottom-color:var(--na)}
-tbody th{font-weight:650;width:24%;color:var(--tx)}
-tbody td{color:var(--mu)}
-tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
-
-/* ---------- Detalles y glosario ---------- */
-details{font-size:14px;color:var(--mu);margin-top:18px;padding:13px 16px;border:1px solid var(--bd);border-radius:10px;background:var(--bg)}
-details p{margin:10px 0}
-summary{cursor:pointer;color:var(--tx);font-weight:650;list-style:none;display:flex;align-items:center;gap:10px}
-summary::-webkit-details-marker{display:none}
-summary::before{
-  content:"+";display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;
-  background:var(--az-s);color:var(--az);font-weight:800;line-height:1;
-}
-details[open] > summary::before{content:"\2212"}
-details label{display:flex;align-items:center;gap:4px;margin-top:8px;color:var(--tx)}
-
-dl{margin:16px 0 0}
-dt{font-weight:700;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);font-family:var(--serif);font-size:17px}
-dt:first-child{border-top:0;padding-top:0;margin-top:0}
-dd{margin:3px 0 0;color:var(--mu);font-size:15px}
-#t3 p{margin:0 0 12px}
-.fuentes{font-size:14px;color:var(--mu)}
-
-/* ---------- Pie ---------- */
-.foot{background:var(--hd);color:var(--hd-mu);font-size:13px}
-.foot .in{max-width:1040px;margin:0 auto;padding:26px 20px;display:flex;flex-wrap:wrap;gap:8px 32px;justify-content:space-between}
-.foot b{color:var(--hd-tx)}
-.foot p{margin:0;max-width:60ch}
-
-a{color:var(--az)}
-.hide{display:none}
-
-/* ---------- Móvil ---------- */
-@media (max-width:560px){
-  .w{padding:20px 12px 40px}
-  .top .in{padding:30px 16px 28px}
-  .card{padding:18px 16px}
-  .row{gap:10px}
-  .res{padding:14px 12px}
-  .ver{grid-template-columns:1fr}
-  .q label{flex-direction:column;gap:6px;align-items:flex-start}
-  .tabs{padding:0 4px}
-  .tabs button{font-size:13.5px;padding:14px 4px 12px}
-}
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-}
+.msg{font-size:15px;margin:10px 0 0}.warn{color:var(--wa);font-size:14px;margin-top:6px}
+.bar{height:22px;border-radius:6px;margin:3px 0 10px;min-width:2px}
+details{font-size:14px;color:var(--mu);margin-top:8px}summary{cursor:pointer;color:var(--tx);font-weight:600}
+dt{font-weight:700;margin-top:10px}dd{margin:2px 0 0;color:var(--mu)}
+.ver{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.ver div{border-radius:10px;padding:10px;font-size:14px}
+.ant{background:rgba(235,104,52,.12)}.aho{background:rgba(42,120,214,.12)}
+a{color:var(--az)}.hide{display:none}
+.num{width:100%;margin-top:4px;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);font-size:16px}
 </style>
 </head>
 <body>
-
-<header class="top"><div class="in">
-<span class="eyebrow">Tema 9 · Seguridad social en México</span>
+<div class="w">
 <h1>¿Cuánto me van a pagar de pensión?</h1>
-<p class="sub">Compara lo que recibirías bajo la Ley 73 y la Ley 97 del IMSS. Mueve los controles y mira qué cambia; te explicamos cada término sin tecnicismos.</p>
-<div class="lg"><span><i style="background:#73a7f0"></i>Ley 73: se basa en tu salario</span><span><i style="background:#f08a5d"></i>Ley 97: se basa en tu ahorro</span></div>
-</div></header>
-
-<nav class="nav"><div class="tabs" role="tablist">
+<p class="sub">Mueve los controles y mira qué cambia. Sin tecnicismos: te vamos explicando cada término.</p>
+<div class="tabs" role="tablist">
 <button class="on" data-t="t1">Mi pensión</button>
 <button data-t="t2">Modalidad 40</button>
+<button data-t="t4">Ahorrar</button>
 <button data-t="t3">Cómo funciona</button>
-</div></nav>
-
-<main class="w">
+</div>
 
 <section id="t1">
 <div class="card">
-<div class="grp">
-<h3><b>1</b>Sobre ti</h3>
-<div class="q"><label for="edad">¿Cuántos años tienes? <b id="edad_o"></b></label><input type="range" id="edad" min="20" max="59" value="30"></div>
-<div class="q"><label for="sbc">¿Cuánto ganas al mes? <b id="sbc_o"></b></label><small>El sueldo con el que cotizas en el IMSS, el de tu nómina antes de descuentos.</small><input type="range" id="sbc" min="8000" max="120000" step="1000" value="20000"></div>
-<div class="q"><label for="ini">¿En qué año empezaste a trabajar con seguro social (IMSS)? <b id="ini_o"></b></label><small>Esto decide qué ley te toca.</small><input type="range" id="ini" min="1980" max="2026" value="2018"></div>
-</div>
-<div class="grp">
-<h3><b>2</b>Tu retiro</h3>
-<div class="q"><label for="ret">¿A qué edad te quieres retirar? <b id="ret_o"></b></label><small>Antes de los 65 te pagan menos en la Ley 73 (5% menos por cada año que te adelantes).</small><input type="range" id="ret" min="60" max="65" value="65"></div>
-<div class="q"><label for="aho">¿Cuánto dinero tienes ahorrado en tu Afore? <b id="aho_o"></b></label><small>La Afore es la cuenta donde se guarda tu ahorro para el retiro. Si no lo sabes, déjalo en $0 y lo estimamos.</small><input type="range" id="aho" min="0" max="3000000" step="50000" value="0"></div>
-<div class="q chk"><label><span><input type="checkbox" id="par"> Tengo esposa(o) o pareja que dependería de mí</span></label><small>En la Ley 73 suma 15% a la pensión.</small></div>
-</div>
+<div class="q"><label for="edad">¿Cuántos años tienes? <b id="edad_o"></b></label><input type="range" id="edad" min="15" max="74" value="30"></div>
+<div class="q"><label for="sbc">¿Cuánto ganas al mes? <b id="sbc_o"></b></label><small>El sueldo con el que cotizas en el IMSS, el de tu nómina antes de descuentos. El IMSS registra mínimo 1 salario mínimo (<span class="smv"></span>) y toma máximo 25 UMA (<span class="tpv"></span>); fuera de ese rango calculamos con el límite.</small><input type="range" id="sbc" min="0" max="500000" step="1000" value="20000"></div>
+<div class="q"><label for="ini">¿En qué año empezaste a trabajar con seguro social (IMSS)? <b id="ini_o"></b></label><small>Esto decide qué ley te toca. Usamos la ley de hoy: no podemos pronosticar cambios futuros.</small><input type="range" id="ini" min="1930" max="2026" value="2018"></div>
+<div class="q"><label for="ret">¿A qué edad te quieres retirar? <b id="ret_o"></b></label><small>Desde los 60 años. Antes de los 65 te pagan menos en la Ley 73 (5% menos por cada año que te adelantes); si te retiras después de los 65, tu pensión sube.</small><input type="range" id="ret" min="60" max="75" value="65"></div>
+<div class="q"><label for="aho">¿Cuánto dinero tienes ahorrado en tu Afore? <b id="aho_o"></b></label><small>La Afore es la cuenta donde se guarda tu ahorro para el retiro. Si no lo sabes, déjalo en $0 y lo estimamos.</small><input type="range" id="aho" min="0" max="20000000" step="100000" value="0"></div>
+<div class="q"><label><span><input type="checkbox" id="esp"> Tengo esposa(o) o pareja que depende de mí</span></label><small>Ley 73: suma 15% a la pensión.</small></div>
+<div class="q"><label for="hij">Hijos que dependen de ti <b id="hij_o"></b></label><small>Menores de 16 años, hasta 25 si estudian, o con discapacidad. Ley 73: +10% por cada uno.</small><input type="range" id="hij" min="0" max="10" value="0"></div>
+<div class="q" style="margin-bottom:0"><label for="pad">Padres que dependen de ti <b id="pad_o"></b></label><small>Solo cuentan si no tienes esposa(o) ni hijos: +10% por cada uno (y +10% más si es solo uno). Si no tienes a nadie, la ley da una ayuda asistencial de 15%. En la Ley 97 tu familia no cambia el monto.</small><input type="range" id="pad" min="0" max="2" value="0"></div>
 </div>
 
 <div class="card">
 <h2>Tu pensión mensual al retirarte</h2>
-<p class="sub" style="margin-bottom:0">Resultado estimado según los datos que ingresaste.</p>
 <div class="row">
 <div class="res l73" id="c73"><span class="badge hide" id="b73">Tu ley</span><div class="t">Ley 73 (la de antes)</div><div class="n" id="p73"></div><div class="t" id="r73"></div></div>
 <div class="res l97" id="c97"><span class="badge hide" id="b97">Tu ley</span><div class="t">Ley 97 (la actual)</div><div class="n" id="p97"></div><div class="t" id="r97"></div></div>
@@ -267,11 +70,11 @@ a{color:var(--az)}
 
 <div class="card">
 <h2>¿Y si me retiro a otra edad?</h2>
-<p class="sub" style="margin-bottom:4px">Pensión mensual según la edad de retiro (azul = Ley 73, naranja = Ley 97).</p>
+<p class="sub" style="margin-bottom:4px">Pensión mensual según la edad de retiro, de 60 a 75 años (azul = Ley 73, naranja = Ley 97). La edad que elegiste aparece resaltada con fondo gris.</p>
 <div id="chart"></div>
 <details><summary>Supuestos que usamos</summary>
-<p>UMA 2026: $3,566.22 al mes. Salario mínimo 2026: $315.04 diarios. Tu sueldo sube 4.5% al año; UMA y salario mínimo, 3.5%; tu Afore rinde 7% anual. Las cifras están en pesos del año en que te retiras, no en pesos de hoy. Es una simulación didáctica, no una asesoría.</p>
-<label><input type="checkbox" id="x11"> Sumar el 11% extra que aparece en el material de clase</label>
+<p>UMA 2026: $3,566.22 al mes. Salario mínimo 2026: $315.04 diarios. Tu sueldo sube 4.5% al año; UMA y salario mínimo, 3.5%; tu Afore rinde 7% anual. Las cifras están en pesos del año en que te retiras, no en pesos de hoy. En la Ley 73 la pensión con asignaciones no pasa de tu sueldo promedio (ajuste del art. 169). En la Ley 97 el factor de anualidad es exacto solo a los 61, 62 y 64 años; en las demás edades es una estimación. La pensión mínima de la Ley 73 es 1 salario mínimo más 11% del decreto (unos $10,637 en 2026). La pensión garantizada de la Ley 97 sale de una tabla del art. 170 (de $3,540.56 a $11,128.01 en 2026): aquí es una aproximación según edad, semanas y sueldo. Es una simulación didáctica, no una asesoría.</p>
+<label><input type="checkbox" id="x11"> Sumar 11% a toda la pensión, como en el material de clase (la ley lo aplica solo a la pensión mínima)</label>
 </details>
 </div>
 </section>
@@ -279,16 +82,32 @@ a{color:var(--az)}
 <section id="t2" class="hide">
 <div class="card">
 <h2>Modalidad 40: antes vs. ahora</h2>
-<p class="sub">Es seguir pagando al IMSS por tu cuenta cuando dejas de trabajar, para juntar semanas y subir tu pensión (aplica a la Ley 73). Desde el <b>22 de octubre de 2026</b> las reglas para quien entra nuevo cambiaron.</p>
+<p class="sub">Es seguir pagando al IMSS por tu cuenta cuando dejas de trabajar, para juntar semanas y subir tu pensión (aplica a la Ley 73). Para entrar necesitas estar dado de baja del IMSS y tener al menos 52 semanas cotizadas en los últimos 5 años. Desde el <b>22 de octubre de 2026</b> las reglas para quien entra nuevo cambiaron.</p>
 <div class="ver"><div class="ant"><b>Antes</b><br>Podías elegir un sueldo de hasta 25 UMA (unos $89,000 al mes) y hasta registrarte con fechas pasadas.</div>
 <div class="aho"><b>Ahora</b><br>Solo tu último sueldo registrado, o ese más 1 UMA. Sin fechas pasadas y el trámite es digital.</div></div>
-<div class="q"><label for="u">¿Cuál fue tu último sueldo al mes? <b id="u_o"></b></label><input type="range" id="u" min="3000" max="80000" step="500" value="5000"></div>
-<div class="q"><label for="sem">¿Cuántas semanas llevas cotizadas? <b id="sem_o"></b></label><small>Un año de trabajo son unas 52 semanas.</small><input type="range" id="sem" min="500" max="2000" step="25" value="1000"></div>
-<div class="q"><label for="m">¿Cuántos años pagarías en Modalidad 40? <b id="m_o"></b></label><input type="range" id="m" min="1" max="5" value="5"></div>
+<div class="q"><label for="u">¿Cuál fue tu último sueldo al mes? <b id="u_o"></b></label><small>Para calcular usamos mínimo 1 salario mínimo (<span class="smv"></span>): si pones menos, calculamos con esa cantidad. Solo cuenta hasta 25 UMA (<span class="tpv"></span>).</small><input type="range" id="u" min="1" max="500000" step="500" value="5000"></div>
+<div class="q"><label for="sem">¿Cuántas semanas llevas cotizadas? <b id="sem_o"></b></label><small>52 semanas = 1 año, 104 = 2 años, 156 = 3 años y así. Mínimo 52 semanas en los últimos 5 años para entrar a Modalidad 40; para pensionarte en Ley 73 necesitas 500 en total.</small><input type="range" id="sem" min="52" max="2600" step="13" value="1000"></div>
+<div class="q"><label for="m">¿Cuántos años pagarías en Modalidad 40? <b id="m_o"></b></label><small>Las fuentes consultadas no marcan un mínimo de años. Tu pensión se calcula con tus últimas 250 semanas (unos 5 años), así que más de 5 años ya solo suma semanas.</small><input type="range" id="m" min="1" max="10" value="5"></div>
 <div id="m40"></div>
 <p class="warn">Quien ya estaba inscrito antes del 22 de octubre conserva sus condiciones hasta terminar el periodo que contrató. El IMSS revisará en 6 meses si el esquema sigue.</p>
-<details><summary>Cómo calculamos esto</summary><p>Pensión a los 65 años, en pesos de hoy, con la fórmula de la Ley 73 sobre el promedio de tus últimos 5 años de sueldo (250 semanas). Nunca baja de 1 salario mínimo (pensión mínima garantizada). Cuota mensual 2026: 14.438% del sueldo con que te registras (sube hasta 18.80% en 2030). No incluimos asignaciones familiares.</p></details>
+<details><summary>Cómo calculamos esto</summary><p>Pensión a los 65 años, en pesos de hoy, con la fórmula de la Ley 73 sobre el promedio de tus últimos 5 años de sueldo (250 semanas). Nunca baja de la pensión mínima garantizada de la Ley 73 (1 salario mínimo + 11% del decreto, unos $10,637 en 2026). Cuota mensual 2026: 14.438% del sueldo con que te registras (sube hasta 18.80% en 2030). No incluimos asignaciones familiares.</p></details>
 </div>
+</section>
+
+<section id="t4" class="hide">
+<div class="card">
+<h2>El poder del interés compuesto</h2>
+<p class="sub">Si ahorras e inviertes, tus intereses también ganan intereses. Mira qué pasa con el tiempo.</p>
+<div class="q"><label for="s0">¿Cuánto tienes ahorrado hoy? <b id="s0_o"></b></label><input type="range" id="s0" min="0" max="5000000" step="10000" value="0"></div>
+<div class="q"><label for="sm">¿Cuánto ahorrarías cada mes? <b id="sm_o"></b></label><input type="range" id="sm" min="0" max="100000" step="500" value="1500"></div>
+<div class="q"><label for="rt">¿Qué rendimiento anual esperas? <b id="rt_o"></b></label><small>Por ejemplo 5% anual. A más rendimiento, más riesgo; nada está garantizado.</small><input type="range" id="rt" min="0" max="20" step="0.5" value="5"></div>
+<div class="q"><label for="ys">¿Por cuántos años? <b id="ys_o"></b></label><input type="range" id="ys" min="1" max="60" value="40"></div>
+<div class="q"><label for="inf">Inflación anual esperada <b id="inf_o"></b></label><small>Sirve para ver cuánto valdría ese dinero en pesos de hoy.</small><input type="range" id="inf" min="0" max="10" step="0.5" value="4"></div>
+<div class="q" style="margin-bottom:0"><label for="goal">¿Cuánto quieres juntar? <b id="goal_o"></b></label><input type="range" id="goal" min="100000" max="100000000" step="100000" value="3000000"></div>
+</div>
+<div class="card"><div id="c4"></div>
+<div style="display:flex;gap:16px;margin:10px 0 6px;font-size:12px;color:var(--mu)"><span style="color:var(--az)">■ Lo que pones tú</span><span style="color:var(--na)">■ Intereses que gana</span></div><div id="ch4"></div></div>
+<div class="card"><h2>¿Y frente a las leyes?</h2><div id="cmp"></div></div>
 </section>
 
 <section id="t3" class="hide">
@@ -296,107 +115,132 @@ a{color:var(--az)}
 <h2>Ley 73 vs. Ley 97 en una frase</h2>
 <p><b>Ley 73:</b> el IMSS te paga una pensión calculada con tu sueldo de los últimos 5 años y tus semanas trabajadas. Es como un sueldo de jubilado que se paga entre todos. Aplica a quien empezó a cotizar antes del 1 de julio de 1997.</p>
 <p><b>Ley 97:</b> tu pensión sale de tu propio ahorro en la Afore. Entre más ahorras y más años pasan, más crece. Si tu ahorro es muy bajo, el gobierno te garantiza una pensión mínima.</p>
-<div class="tw"><table>
-<thead><tr><th></th><th class="c73">Ley 73</th><th class="c97">Ley 97</th></tr></thead>
-<tbody>
-<tr><th>¿A quién le toca?</th><td>A quien empezó a cotizar antes del 1 de julio de 1997.</td><td>A quien empezó a cotizar a partir del 1 de julio de 1997.</td></tr>
-<tr><th>¿De dónde sale la pensión?</th><td>De una fórmula con tu sueldo promedio de los últimos 5 años y tus semanas cotizadas.</td><td>Del ahorro acumulado en tu Afore y sus rendimientos.</td></tr>
-<tr><th>Semanas mínimas</th><td>500.</td><td>875 en 2026 (sube 25 por año hasta llegar a 1,000).</td></tr>
-<tr><th>Edad de retiro</th><td>65 años. Desde los 60 se puede, con 5% menos por cada año que te adelantes.</td><td>Entre los 60 y los 65 años; mientras más tarde, mayor es tu ahorro.</td></tr>
-<tr><th>Pensión mínima</th><td>Nunca baja de 1 salario mínimo.</td><td>Pensión garantizada si tu ahorro no alcanza.</td></tr>
-</tbody></table></div>
-</div>
-<div class="card">
-<h2>Glosario</h2>
 <dl>
 <dt>UMA</dt><dd>Unidad de Medida y Actualización. Un valor en pesos que el gobierno usa como regla para topes y cuotas. En 2026 vale $117.31 al día.</dd>
 <dt>Semanas cotizadas</dt><dd>Las semanas en que tu patrón (o tú) pagó al IMSS por ti. Piden mínimo 500 en la Ley 73 y 875 en la Ley 97 durante 2026 (sube 25 por año hasta 1,000).</dd>
 <dt>Afore</dt><dd>La cuenta donde se junta tu ahorro para el retiro. La administra una empresa y rinde intereses.</dd>
 <dt>Sueldo base de cotización</dt><dd>El sueldo con el que el IMSS te registra. Tiene tope de 25 UMA.</dd>
+<dt>Interés compuesto</dt><dd>Cuando los intereses que ganas también generan intereses. Por eso ahorrar desde joven rinde tanto: el tiempo trabaja por ti.</dd>
 <dt>Pensión garantizada</dt><dd>La pensión mínima que el gobierno completa si tu Afore no alcanza.</dd>
 </dl>
 </div>
 <div class="card">
+<h2>Aviso: en qué se diferencia de las calculadoras oficiales</h2>
+<p style="font-size:14px">Esta página es una simulación didáctica. Las calculadoras de CONSAR y de las Afores usan otros supuestos, por eso no darán el mismo número:</p>
+<ul style="font-size:14px;color:var(--mu);padding-left:18px;margin:0 0 12px">
+<li><b>Pesos:</b> CONSAR muestra el monto en pesos de hoy. Aquí se muestra en pesos del año en que te retiras. Para comparar, divide entre 1.035 elevado a los años que faltan (3.5% de inflación).</li>
+<li><b>Rendimiento:</b> CONSAR usa 4% real y descuenta la comisión de la Afore (0.55% anual en 2025). Aquí son 7% nominal y sin comisión.</li>
+<li><b>Sueldo:</b> CONSAR no lo aumenta; aquí sube 4.5% al año.</li>
+<li><b>Constancia:</b> CONSAR supone que cotizas 80% del tiempo; aquí, 100%.</li>
+<li><b>Anualidad:</b> CONSAR calcula la renta solo para el titular, con tablas de mortalidad y un margen de seguridad de 2%. Aquí usamos un factor del curso que incluye beneficiarios, y solo es exacto a los 61, 62 y 64 años.</li>
+<li><b>Subcuentas:</b> no sumamos vivienda (Infonavit) ni cuota social (para quien gana hasta 4.01 UMA).</li>
+<li><b>Pensión garantizada de la Ley 97:</b> es una aproximación; la tabla oficial cruza edad, semanas y sueldo.</li>
+<li><b>El 11%:</b> se aplica solo a la pensión mínima de la Ley 73.</li>
+</ul>
 <h2>Fuentes</h2>
-<p class="fuentes">Acuerdo ACDO.AS2.HCT.101026/302.P.DG del Consejo Técnico del IMSS, publicado en el DOF el 21-oct-2026 (Modalidad 40). Notas: El Financiero y Infobae (21-oct-2026), Canitas (oct-2026). UMA 2026: INEGI, DOF del 9-ene-2026. Salario mínimo 2026: $315.04 diarios (zona general). Ley del Seguro Social, arts. 167 y 168 (Ley 73) y 170 (Ley 97). Material y especificaciones del curso.</p>
+<p style="font-size:14px">Acuerdo ACDO.AS2.HCT.101026/302.P.DG del Consejo Técnico del IMSS, publicado en el DOF el 21-oct-2026 (Modalidad 40). Notas: El Financiero y Infobae (21-oct-2026), Canitas (oct-2026). UMA 2026: INEGI, DOF del 9-ene-2026. Salario mínimo 2026: $315.04 diarios (zona general). Asignaciones familiares y ayuda asistencial (Ley 73): IMSS y art. 164 de la Ley del Seguro Social de 1973. Requisitos de Modalidad 40 (52 semanas en los últimos 5 años, tope de 25 UMA): IMSS, UnoTV y Expansión (2025-2026). Semanas mínimas de la Ley 97 (875 en 2026, 1,000 en 2031): reforma de 2020, artículo cuarto transitorio; Expansión y UnoTV (2026). Ley del Seguro Social, arts. 167 y 168 (Ley 73) y 170 (Ley 97). Porcentajes por retiro anticipado (art. 171): IMSS y UnoTV (2026). Pensión mínima Ley 73 (art. 168; 1 salario mínimo + 11% del decreto): HaceCuentas y UnoTV (2026). Pensión garantizada Ley 97, de $3,540.56 a $11,128.01 en 2026: El Contribuyente y Cronista (2026). Metodología de la proyección de la Ley 97 (Afore SURA, 2025, alineada con CONSAR): 4% real, comisión de 0.55%, constancia de 80%, margen de seguridad de 2%. Material y especificaciones del curso.</p>
 </div>
 </section>
-
-</main>
-
-<footer class="foot"><div class="in">
-<p><b>Simulación didáctica, no es asesoría financiera.</b> Las cifras son estimaciones; confirma montos, topes y parámetros directamente en el IMSS y la CONSAR.</p>
-<p><b>Tema 9 · Equipo 2</b><br>Lucía Cárdenas · Flor Martínez · Carlos Contreras · Carlos Ipiña · María José Meza</p>
-</div></footer>
+</div>
 
 <script>
-const P={uma:3566.22,sm:315.04*30.4,gu:.035,gs:.045,r:.07,a0:.106376,ap:.010906,at:.15,g21:7046};
+const P={uma:3566.22,sm:315.04*365/12,gu:.035,gs:.045,r:.07,a0:.106376,ap:.010906,at:.15,g21:7046};
 const T=[[1,.8,.00563],[1.25,.7711,.00814],[1.5,.5818,.01178],[1.75,.4923,.0143],[2,.4267,.01615],[2.25,.3765,.01756],[2.5,.3368,.01868],[2.75,.3048,.01958],[3,.2783,.02033],[3.25,.256,.02096],[3.5,.237,.02149],[3.75,.2207,.02195],[4,.2065,.02235],[4.25,.1939,.02271],[4.5,.1829,.02302],[4.75,.173,.0233],[5,.1641,.02355],[5.25,.1561,.02377],[5.5,.1488,.02398],[5.75,.1422,.02416],[6,.1362,.02433],[1e9,.13,.0245]];
 const AN={61:248.7147,62:244.6939,64:236.3211};
 const $=i=>document.getElementById(i),$$=s=>[...document.querySelectorAll(s)];
 const money=x=>'$'+Math.round(x).toLocaleString('es-MX');
 const anual=e=>{if(AN[e])return AN[e];const k=Object.keys(AN).map(Number).sort((a,b)=>Math.abs(a-e)-Math.abs(b-e)).slice(0,2);return AN[k[0]]+(AN[k[1]]-AN[k[0]])/(k[1]-k[0])*(e-k[0])};
-const sue=(s,k)=>s*Math.pow(1+P.gs,k);
+const sue=(s,k)=>Math.min(s*Math.pow(1+P.gs,k),25*P.uma*Math.pow(1+P.gu,k));
+const asig=d=>d.esp||d.hij?(d.esp?.15:0)+.1*d.hij:d.pad?.1*d.pad+(d.pad==1?.1:0):.15;
 const xt=()=>$('x11').checked?1.11:1;
 
 function ley73(d,ret){
  const n=ret-d.edad,ks=[];for(let k=Math.max(0,n-5);k<n;k++)ks.push(sue(d.sbc,k));
- const prom=ks.reduce((a,b)=>a+b,0)/ks.length,sem=(d.anios+n)*52,smf=P.sm*Math.pow(1+P.gu,n);
- if(sem<500)return{p:0,falta:true};
+ const prom=ks.reduce((a,b)=>a+b,0)/ks.length,sem0=(d.anios+n)*52,sem=Math.max(sem0,500),smf=P.sm*Math.pow(1+P.gu,n);
+ 
  const t=T.find(r=>prom/smf<=r[0]);
- let p=prom*(t[1]+t[2]*(sem-500)/52)*(1-.05*Math.max(0,65-ret))*(1+(d.par?.15:0));
- p=Math.max(Math.min(p,prom),smf);
- return{p:p*xt(),ult:sue(d.sbc,n-1)};
+ let p=prom*(t[1]+t[2]*(sem-500)/52)*(1-.05*Math.max(0,65-ret))*(1+asig(d));
+ p=Math.max(Math.min(p,prom),smf*1.11);
+ return{p:p*xt(),ult:sue(d.sbc,n-1),ap:sem0<500};
 }
 function ley97(d,ret){
  const n=ret-d.edad;let s=d.aho>0?d.aho:d.sbc*12*.065*d.anios*Math.pow(1+P.r,d.anios/2);
  for(let k=0;k<n;k++){const u=P.uma*Math.pow(1+P.gu,k),pc=Math.min(P.at,P.a0+P.ap*k),a=pc*12*Math.min(sue(d.sbc,k),25*u);s+=a+a*P.r/2+s*P.r}
- const g=P.g21*Math.pow(1+P.gu,2026+n-2021);
+ const cl=x=>Math.min(1,Math.max(0,x)),g=(3540.56+7587.45*(cl((ret-60)/5)+cl(((d.anios+n)*52-875)/250)+cl((d.sbc/P.uma-1.99)/3.01))/3)*Math.pow(1+P.gu,n);
  return{p:Math.max(s/anual(ret),g)*xt(),saldo:s,g,ult:sue(d.sbc,n-1),sem:(d.anios+n)*52};
 }
 function get(){const g=i=>+$(i).value;const ini=g('ini'),edad=g('edad');
- return{edad,sbc:g('sbc'),ini,ret:g('ret'),aho:g('aho'),par:$('par').checked,anios:Math.max(0,Math.min(2026-ini,edad-16))}}
+ return{edad,raw:g('sbc'),sbc:Math.min(Math.max(g('sbc'),P.sm),25*P.uma),ini,ret:g('ret'),aho:g('aho'),esp:$('esp').checked,hij:g('hij'),pad:g('pad'),anios:Math.max(0,Math.min(2026-ini,edad-15))}}
 
 function calc1(){
- const d=get();$('edad_o').textContent=d.edad+' años';$('sbc_o').textContent=money(d.sbc);$('ini_o').textContent=d.ini;
+ const rm=Math.max(60,+$('edad').value+1),rr=$('ret');rr.min=rm;if(+rr.value<rm){rr.value=rm;if(rr.nextSibling)rr.nextSibling.value=rm}if(rr.nextSibling)rr.nextSibling.min=rm;
+ const d=get();$('edad_o').textContent=d.edad+' años';$('sbc_o').textContent=money(d.raw);$('hij_o').textContent=d.hij;$('pad_o').textContent=d.pad;$('ini_o').textContent=d.ini;
  $('ret_o').textContent=d.ret+' años';$('aho_o').textContent=d.aho>0?money(d.aho):'lo estimamos';
  const a=ley73(d,d.ret),b=ley97(d,d.ret),mi73=d.ini<=1996;
- $('p73').textContent=a.falta?'Sin derecho':money(a.p);$('p97').textContent=money(b.p);
- $('r73').textContent=a.falta?'Menos de 500 semanas':Math.round(a.p/a.ult*100)+'% de tu último sueldo';
+ $('p73').textContent=(a.ap?'≈ ':'')+money(a.p);$('p97').textContent=money(b.p);
+ $('r73').textContent=a.ap?'Aprox. con 500 semanas (el mínimo)':Math.round(a.p/a.ult*100)+'% de tu último sueldo';
  $('r97').textContent=Math.round(b.p/b.ult*100)+'% de tu último sueldo';
  $('c73').classList.toggle('tu',mi73);$('c97').classList.toggle('tu',!mi73);
  $('b73').classList.toggle('hide',!mi73);$('b97').classList.toggle('hide',mi73);
- $('msg').textContent=a.falta?'':(mi73?'Tu ley es la 73. La Ley 97 es lo que te tocaría si hubieras empezado después de 1997.':'Tu ley es la 97. La Ley 73 es hipotética: ya solo aplica a quien empezó antes del 1 de julio de 1997.')+' La Ley 73 pagaría '+(a.p/b.p).toFixed(1)+' veces lo de la Ley 97.';
- let w=[];if(b.sem<875)w.push('Con las semanas que juntarías no alcanzas el mínimo de la Ley 97 en 2026 (875).');
+ $('msg').textContent=(a.ap?'Con las semanas que juntarías no llegas a las 500 que pide la Ley 73, así que mostramos un aproximado con 500. ':'')+(mi73?'Tu ley es la 73. La Ley 97 es lo que te tocaría si hubieras empezado después de 1997.':'Tu ley es la 97. La Ley 73 es hipotética: ya solo aplica a quien empezó antes del 1 de julio de 1997.')+' La Ley 73 pagaría '+(a.p/b.p).toFixed(1)+' veces lo de la Ley 97.';
+ let w=[];const rq=Math.min(1000,875+25*(d.ret-d.edad));if(b.sem<rq)w.push('Con '+b.sem+' semanas no alcanzas el mínimo de la Ley 97 para ese año ('+rq+').');if(d.raw<P.sm)w.push('Calculamos con 1 salario mínimo ('+money(P.sm)+'): el IMSS no registra menos.');if(d.raw>25*P.uma)w.push('El IMSS solo toma hasta 25 UMA ('+money(25*P.uma)+').');if(2026-d.ini>d.edad-15)w.push('Ajustamos tus años cotizados: no se empieza a cotizar antes de los 15 años.');
  if(b.p<=b.g*xt()*1.0001)w.push('Tu ahorro no alcanza: te pagarían la pensión garantizada.');
  if(d.ini>1997&&d.anios<29)w.push('Para aplicar la Ley 73 se necesitan unos 29 años cotizados o más hoy; aquí es solo comparación.');
  $('adv').textContent=w.join(' ');
- const ages=[60,61,62,63,64,65].filter(e=>e>d.edad),rows=ages.map(e=>[e,ley73(d,e).p,ley97(d,e).p]),mx=Math.max(...rows.map(r=>Math.max(r[1],r[2])))*1.1;
- const W=320,H=190,L=8,bw=(W-2*L)/rows.length;let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Pensión por edad de retiro">';
- rows.forEach((r,i)=>{const x=L+i*bw,sel=r[0]==d.ret;
-  if(sel)s+='<rect x="'+(x+1)+'" y="4" width="'+(bw-2)+'" height="'+(H-26)+'" rx="6" fill="currentColor" opacity=".08"/>';
-  [[r[1],'var(--az)',0],[r[2],'var(--na)',1]].forEach(v=>{const h=(H-40)*v[0]/mx,bx=x+bw/2-17+v[2]*18;
-   s+='<rect x="'+bx+'" y="'+(H-22-h)+'" width="16" height="'+h+'" rx="3" fill="'+v[1]+'"/><text x="'+(bx+8)+'" y="'+(H-26-h)+'" font-size="8" text-anchor="middle" fill="currentColor">'+Math.round(v[0]/1000)+'k</text>'});
-  s+='<text x="'+(x+bw/2)+'" y="'+(H-6)+'" font-size="11" text-anchor="middle" fill="currentColor" font-weight="'+(sel?700:400)+'">'+r[0]+'</text>'});
- $('chart').innerHTML=s+'</svg>';
+ const ages=[60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75].filter(e=>e>d.edad),rows=ages.map(e=>[e,ley73(d,e).p,ley97(d,e).p]),mx=Math.max(...rows.map(r=>Math.max(r[1],r[2])))*1.1;
+ $('chart').innerHTML=bars(rows,d.ret,mx);calc4();
 }
 
-function pen40(prom,sem){const t=T.find(r=>prom/P.sm<=r[0]);return Math.max(Math.min(prom,prom*(t[1]+t[2]*(sem-500)/52)),P.sm)}
+const fv=(p,m,i,n)=>i?p*Math.pow(1+i,n)+m*(Math.pow(1+i,n)-1)/i:p+m*n;
+function calc4(){
+ const p=+$('s0').value,m=+$('sm').value,rt=+$('rt').value,y=Math.round(+$('ys').value),fi=+$('inf').value,g=+$('goal').value,i=Math.pow(1+rt/100,1/12)-1,N=y*12;
+ $('s0_o').textContent=money(p);$('sm_o').textContent=money(m)+' al mes';$('rt_o').textContent=rt+'% anual';$('ys_o').textContent=y+' años';$('inf_o').textContent=fi+'%';$('goal_o').textContent=money(g);
+ const F=fv(p,m,i,N),put=p+m*N,real=F/Math.pow(1+fi/100,y),need=i?(g-p*Math.pow(1+i,N))*i/(Math.pow(1+i,N)-1):(g-p)/N,w=y>10?fv(p,m,i,N-120):0;
+ $('c4').innerHTML='<h2>Al final tendrías</h2><div style="font-size:28px;font-weight:700;color:var(--ok)">'+money(F)+'</div><p class="msg">De eso, <b>'+money(put)+'</b> los pusiste tú y <b>'+money(F-put)+'</b> ('+Math.round(((F-put)/F*100)||0)+'%) son intereses. En pesos de hoy (con inflación) equivaldría a unos <b>'+money(real)+'</b>.</p><p class="msg">Para juntar '+money(g)+' en '+y+' años tendrías que ahorrar '+(need>0?'<b>'+money(need)+'</b> al mes.':'nada más: ya con lo que tienes llegas.')+'</p>'+(w?'<p class="warn">Si esperas 10 años para empezar (y ahorras lo mismo), juntarías '+money(w)+': pierdes '+money(F-w)+'.</p>':'');
+ let s='<svg viewBox="0 0 320 165" width="100%" role="img" aria-label="Crecimiento de tu ahorro año por año">',bw=300/y,mx=F||1;
+ for(let k=1;k<=y;k++){const t=fv(p,m,i,k*12),c=Math.min(p+m*12*k,t),x=10+(k-1)*bw,h1=130*c/mx,h2=130*(t-c)/mx,ww=Math.max(bw-1,1);
+  s+='<rect x="'+x+'" y="'+(140-h1)+'" width="'+ww+'" height="'+h1+'" fill="var(--az)"/><rect x="'+x+'" y="'+(140-h1-h2)+'" width="'+ww+'" height="'+h2+'" fill="var(--na)"/>'}
+ cmp4(p,m,i);$('ch4').innerHTML=s+'<text x="10" y="158" font-size="11" fill="currentColor">año 1</text><text x="310" y="158" font-size="11" text-anchor="end" fill="currentColor">año '+y+'</text></svg>';
+}
+function bars(rows,sel,mx){
+ const W=320,H=210,L=34,R=6,T=16,B=26,pw=W-L-R,ph=H-T-B,g=pw/rows.length,bw=Math.min(12,(g-3)/2),Y=v=>T+ph*(1-v/mx);
+ let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Pensión mensual por edad de retiro, Ley 73 y Ley 97">';
+ for(let k=0;k<=4;k++){const v=mx*k/4,y=Y(v);s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'" stroke="currentColor" opacity=".12"/><text x="'+(L-4)+'" y="'+(y+3)+'" font-size="9" text-anchor="end" fill="currentColor">'+Math.round(v/1000)+'k</text>'}
+ rows.forEach((r,i)=>{const x=L+i*g,on=r[0]==sel;
+  if(on)s+='<rect x="'+x+'" y="'+(T-6)+'" width="'+g+'" height="'+(ph+6)+'" rx="4" fill="currentColor" opacity=".1"/>';
+  [[r[1],'var(--az)',0],[r[2],'var(--na)',1]].forEach(c=>{const bx=x+g/2-bw+c[2]*bw,y=Y(c[0]);s+='<rect x="'+bx+'" y="'+y+'" width="'+bw+'" height="'+(T+ph-y)+'" rx="2" fill="'+c[1]+'"/>'});
+  s+='<text x="'+(x+g/2)+'" y="'+(H-8)+'" font-size="9" text-anchor="middle" fill="currentColor" font-weight="'+(on?700:400)+'">'+r[0]+'</text>'});
+ return s+'</svg>';
+}
+function cmp4(p,m,i){
+ const d=get(),R=d.ret,y=R-d.edad,N=y*12,a=ley73(d,R),b=ley97(d,R),f=anual(R),fm=Math.pow(1+i,N),F=fv(p,m,i,N),mine=F/f,gap=a.p-b.p;
+ const need=G=>{const x=i?(G*f-p*fm)*i/(fm-1):(G*f-p)/N;return x>0?'<b>'+money(x)+'</b> al mes':null};
+ const o=[['Ley 73'+(a.ap?' (aprox.)':''),a.p,'var(--az)'],['Ley 97',b.p,'var(--na)'],['Tu plan de ahorro',mine,'var(--ok)'],['Ley 97 + tu plan',b.p+mine,'var(--mu)']],mx=Math.max(...o.map(r=>r[1]),1);
+ let h='<p class="sub">Retiro a los <b>'+R+'</b> años (dentro de '+y+' años), con el sueldo, el año de inicio y la familia de la pestaña “Mi pensión”. Montos mensuales en pesos de ese año.</p>';
+ o.forEach(r=>{h+='<div><b>'+r[0]+'</b>: '+money(r[1])+' al mes</div><div class="bar" style="width:'+r[1]/mx*100+'%;background:'+r[2]+'"></div>'});
+ if(gap>0){const x=need(gap);h+='<p class="msg">Con la Ley 97 recibirías '+money(b.p)+' al mes y con la Ley 73, '+money(a.p)+': te faltan <b>'+money(gap)+'</b> al mes. '+(x?'Para igualar la Ley 73 tendrías que ahorrar '+x+' desde hoy hasta tu retiro ('+y+' años), con el rendimiento y el ahorro de hoy que pusiste arriba.':'Con lo que ya tienes ahorrado hoy igualas la Ley 73 sin ahorrar más.')+'</p><p class="sub">Tu plan actual ('+money(m)+' al mes) cubre '+money(Math.min(mine,gap))+' de esos '+money(gap)+'.</p>'}
+ else h+='<p class="msg">Tu Ley 97 ya paga igual o más que la Ley 73 ('+money(-gap)+' más al mes), así que no necesitas ahorrar para igualarla. Tu plan de ahorro de arriba es un extra.</p>';
+ if(a.ap)h+='<p class="warn">Con tus semanas no alcanzas las 500 de la Ley 73: ese monto es aproximado, calculado con 500 semanas.</p>';
+ $('cmp').innerHTML=h;
+}
+function pen40(prom,sem){sem=Math.max(sem,500);const t=T.find(r=>prom/P.sm<=r[0]);return Math.max(Math.min(prom,prom*(t[1]+t[2]*(sem-500)/52)),P.sm*1.11)}
 function calc2(){
- const u=+$('u').value,sem=+$('sem').value,m=+$('m').value;
- $('u_o').textContent=money(u);$('sem_o').textContent=sem+' semanas';$('m_o').textContent=m+(m==1?' año':' años');
+ const ur=+$('u').value,sem=Math.round(+$('sem').value),m=Math.round(+$('m').value),u=Math.min(Math.max(ur,P.sm),25*P.uma);
+ $('u_o').textContent=money(ur);$('sem_o').textContent=sem+' sem ≈ '+(sem/52).toFixed(1)+' años';$('m_o').textContent=m+(m==1?' año':' años');
  const w=Math.min(m*52,250),s2=sem+m*52,mix=s=>(w*s+(250-w)*u)/250;
- const sAnt=25*P.uma,sAho=Math.max(u+P.uma,P.sm);
+ const sAnt=25*P.uma,sAho=Math.min(u+P.uma,25*P.uma);
  const o=[['Sin Modalidad 40',pen40(u,sem),0],['Ahora (último sueldo + 1 UMA)',pen40(mix(sAho),s2),sAho],['Antes (hasta 25 UMA)',pen40(mix(sAnt),s2),sAnt]];
- const mx=Math.max(...o.map(r=>r[1]));let h='';
+ const mx=Math.max(...o.map(r=>r[1]),1);let h='';
  o.forEach((r,i)=>{h+='<div><b>'+r[0]+'</b>: '+money(r[1])+' al mes'+(r[2]?' <span style="color:var(--mu)">· pagarías '+money(r[2]*.14438)+' al mes ('+money(r[2]*.14438*12*m)+' en total)</span>':'')+'</div><div class="bar" style="width:'+(r[1]/mx*100)+'%;background:'+['var(--mu)','var(--az)','var(--na)'][i]+'"></div>'});
- h+='<p class="msg">Con las reglas nuevas ganas '+money(o[1][1]-o[0][1])+' al mes frente a no hacer nada; con las de antes habrías ganado '+money(o[2][1]-o[0][1])+'. Si tu pensión sale igual al salario mínimo ('+money(P.sm)+'), es porque esa es la pensión mínima garantizada.</p>';
+ h+='<p class="msg">'+(s2<500?'Con tus semanas no llegas a las 500 de la Ley 73: los montos son aproximados, calculados con 500 semanas. ':'Con las reglas nuevas ganas '+money(o[1][1]-o[0][1])+' al mes frente a no hacer nada; con las de antes habrías ganado '+money(o[2][1]-o[0][1])+'. ')+'Si sale igual a '+money(P.sm*1.11)+', es la pensión mínima garantizada (1 salario mínimo + 11% del decreto).'+(ur<P.sm?' Calculamos con 1 salario mínimo porque el IMSS no registra menos.':'')+(ur>25*P.uma?' Solo cuenta hasta 25 UMA ('+money(25*P.uma)+').':'')+'</p>';
  $('m40').innerHTML=h;
 }
 
-$$('.tabs button').forEach(b=>b.onclick=()=>{$$('.tabs button').forEach(x=>x.classList.toggle('on',x==b));['t1','t2','t3'].forEach(t=>$(t).classList.toggle('hide',t!=b.dataset.t))});
-$$('#t1 input').forEach(i=>i.addEventListener('input',calc1));$$('#t2 input').forEach(i=>i.addEventListener('input',calc2));
-calc1();calc2();
+$$('.tabs button').forEach(b=>b.onclick=()=>{$$('.tabs button').forEach(x=>x.classList.toggle('on',x==b));['t1','t2','t4','t3'].forEach(t=>$(t).classList.toggle('hide',t!=b.dataset.t))});
+$$('input[type=range]').forEach(r=>{const n=document.createElement('input');n.type='number';n.className='num';n.step='any';n.min=r.min;n.max=r.max;n.value=r.value;r.after(n);r.addEventListener('input',()=>{n.value=Math.round(r.value*100)/100});n.addEventListener('change',()=>{const v=Math.min(+r.max,Math.max(+r.min,+n.value||+r.min));if(+r.step>1)r.step='any';n.value=v;r.value=v;r.dispatchEvent(new Event('input'))})});
+$$('.smv').forEach(e=>e.textContent=money(P.sm));$$('.tpv').forEach(e=>e.textContent=money(25*P.uma));
+$$('#t1 input').forEach(i=>i.addEventListener('input',calc1));$$('#t4 input').forEach(i=>i.addEventListener('input',calc4));$$('#t2 input').forEach(i=>i.addEventListener('input',calc2));
+calc1();calc2();calc4();
 </script>
 </body>
 </html>

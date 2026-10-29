@@ -1,78 +1,106 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Icon from './Icon.jsx'
-import { money } from '../lib/calc.js'
+import { PLASTILINA } from '../assets/plastilina/index.js'
 
-// Aparición suave al entrar en pantalla. Si el navegador no lo soporta, el contenido se muestra directamente.
-export function Reveal({ as: Tag = 'div', className = '', children, ...resto }) {
-  const ref = useRef(null)
-  const [visto, setVisto] = useState(false)
-
+// true mientras el elemento está (al menos en parte) dentro de la franja indicada de la pantalla.
+export function useVisible(ref, rootMargin = '0px') {
+  const [v, setV] = useState(false)
   useEffect(() => {
     const el = ref.current
-    if (!el || typeof IntersectionObserver === 'undefined') {
-      setVisto(true)
-      return
-    }
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setVisto(true)
-          io.disconnect()
-        }
-      },
-      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' },
-    )
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(([e]) => setV(e.isIntersecting), { rootMargin })
     io.observe(el)
-    const seguro = setTimeout(() => setVisto(true), 2500)
-    return () => {
-      io.disconnect()
-      clearTimeout(seguro)
-    }
-  }, [])
+    return () => io.disconnect()
+  }, [ref, rootMargin])
+  return v
+}
 
+// Ancho real de un contenedor, para dibujar las gráficas SVG a escala 1:1 (texto legible en móvil).
+// estable = ya hubo una medición real; antes de eso las gráficas no animan su geometría.
+export function useAncho(ref, inicial = 640) {
+  const [w, setW] = useState(inicial)
+  const [estable, setEstable] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    let raf
+    const ro = new ResizeObserver(([e]) => {
+      const ancho = Math.round(e.contentRect.width)
+      if (ancho > 0) {
+        setW(Math.max(260, ancho))
+        raf = requestAnimationFrame(() => setEstable(true))
+      }
+    })
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      cancelAnimationFrame(raf)
+    }
+  }, [ref])
+  return [w, estable]
+}
+
+// Miniatura de plastilina. Su fondo celeste es el mismo del recuadro, y el borde se desvanece
+// para que no se note el cuadro de la imagen.
+export function Plastilina({ nombre, sizes = '320px', prioridad = false, className = '' }) {
+  const img = PLASTILINA[nombre]
   return (
-    <Tag ref={ref} className={'reveal ' + (visto ? 'in ' : '') + className} {...resto}>
-      {children}
-    </Tag>
+    <img
+      className={'plast ' + className}
+      src={img.l}
+      srcSet={`${img.s} 320w, ${img.l} 640w`}
+      sizes={sizes}
+      width="640"
+      height="640"
+      alt={img.alt}
+      loading={prioridad ? 'eager' : 'lazy'}
+      decoding="async"
+    />
   )
 }
 
-// Etiqueta pequeña sobre los títulos.
-export function Chip({ children, tone = 'blue' }) {
-  return <span className={'chip chip-' + tone}>{children}</span>
+const ICONO_NOTA = { info: 'info', aviso: 'alert', ok: 'check' }
+
+// Mensaje breve junto a un resultado: info (neutro), aviso (algo que conviene saber) u ok.
+export function Nota({ tono = 'info', children, className = '' }) {
+  return (
+    <div className={`nota nota-${tono} ${className}`}>
+      <Icon name={ICONO_NOTA[tono]} size={18} strokeWidth={2} />
+      <div>{children}</div>
+    </div>
+  )
 }
 
-// Encabezado de página: etiqueta, título y una línea opcional.
-export function PageHead({ chip, title, children }) {
+// Título de sección: una pregunta llana y, si hace falta, una línea que la explica.
+export function Titulo({ id, children, lead }) {
   return (
-    <header className="ph">
-      {chip && <Chip>{chip}</Chip>}
-      <h1>{title}</h1>
-      {children && <p>{children}</p>}
+    <header className="titulo">
+      <h2 id={id}>{children}</h2>
+      {lead && <p>{lead}</p>}
     </header>
   )
 }
 
-// Diferencia entre ambas pensiones (valores derivados de los resultados ya calculados).
-export function DiffPill({ cmp }) {
-  const { mayor, diff, veces } = cmp
+// Cada gráfica tiene su tabla: los valores se pueden leer sin pasar el cursor.
+export function VerTabla({ resumen = 'Ver los datos en una tabla', columnas, filas }) {
   return (
-    <div className="diffp">
-      <span className="diffp-i"><Icon name="trend" size={20} /></span>
-      <p>
-        La <b>Ley {mayor}</b> paga <b className="pos">{money(diff)} más</b> al mes
-      </p>
-      {veces != null && <span className="diffp-x">{veces.toFixed(1)}×</span>}
-    </div>
-  )
-}
-
-// Aviso compacto (solo para advertencias que el usuario debe ver).
-export function Alerta({ children }) {
-  return (
-    <div className="alerta" role="alert">
-      <Icon name="alert" size={20} />
-      <p>{children}</p>
-    </div>
+    <details className="ver-tabla">
+      <summary>
+        <span>{resumen}</span>
+        <Icon name="chevron" size={18} strokeWidth={2} />
+      </summary>
+      <div className="ver-tabla-c">
+        <table>
+          <thead>
+            <tr>{columnas.map((c) => <th key={c} scope="col">{c}</th>)}</tr>
+          </thead>
+          <tbody>
+            {filas.map((f) => (
+              <tr key={f[0]}>{f.map((v, i) => (i === 0 ? <th key={i} scope="row">{v}</th> : <td key={i}>{v}</td>))}</tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
   )
 }

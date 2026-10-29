@@ -1,100 +1,81 @@
-import { useState } from 'react'
-import Slider from './Slider.jsx'
+import Campo from './Campo.jsx'
+import Barras from './Barras.jsx'
 import Num from './Num.jsx'
 import Icon from './Icon.jsx'
-import { PageHead } from './ui.jsx'
-import { calcM40, money, P } from '../lib/calc.js'
+import { Nota, Plastilina, Titulo } from './ui.jsx'
+import { money, anios, entero } from '../lib/formato.js'
+import { AYUDA, M40_TEXTOS } from '../lib/contenido.js'
 
-const COLORES = ['var(--line-2)', 'var(--blue)', 'var(--navy)']
-const NOMBRES = ['Sin Modalidad 40', 'Reglas nuevas', 'Reglas anteriores']
+const CLASE = { sin: 'gris', ahora: '73', antes: '73c' }
 
-export default function Modalidad40() {
-  const [f, setF] = useState({ u: 20000, sem: 1000, m: 5 })
-  const set = (k) => (v) => setF((p) => ({ ...p, [k]: v }))
-  const { opciones: o, mx } = calcM40(f)
-  const ganancia = o[1][1] - o[0][1]
+export default function Modalidad40({ m40, set, res }) {
+  const filas = res.opciones.map((o) => ({
+    id: o.id,
+    nombre: o.nombre,
+    valor: o.p,
+    partes: [[CLASE[o.id], o.p]],
+    sub: o.sbc ? `Pagarías ${money(o.cuota)} al mes (${money(o.total)} en total)` : null,
+  }))
 
   return (
-    <div className="page wrap">
-      <PageHead chip="Modalidad 40" title="Paga por tu cuenta, pensiónate con más" />
+    <section className="seccion m40" id="modalidad-40" aria-labelledby="t-m40">
+      <div className="envoltura">
+        <div className="cab-con-imagen">
+          <Titulo id="t-m40" lead={M40_TEXTOS.intro}>Modalidad 40: sigue cotizando por tu cuenta</Titulo>
+          <span className="tile"><Plastilina nombre="recibo" sizes="200px" /></span>
+        </div>
 
-      <div className="ver">
-        <article className="ver-c ver-antes">
-          <span className="ver-tag">Antes</span>
-          <b>Hasta 25 UMA</b>
-          <p>Unos $89,000 al mes y fechas pasadas.</p>
-        </article>
-        <span className="ver-arrow" aria-hidden="true"><Icon name="arrow" size={26} strokeWidth={2.4} /></span>
-        <article className="ver-c ver-ahora">
-          <span className="ver-tag">Desde el 22 oct 2026</span>
-          <b>Tu último sueldo</b>
-          <p>O ese más 1 UMA. Sin fechas pasadas.</p>
-        </article>
-      </div>
-
-      <div className="sim">
-        <aside className="ctrl" aria-label="Datos de Modalidad 40">
-          <div className="ctrl-h"><h2>Tu caso</h2></div>
-          <div className="grp">
-            <Slider id="u" label="Último sueldo mensual" valor={money(f.u)} min={3000} max={80000} step={500} value={f.u} onChange={set('u')}
-              aviso={{ tono: 'info', texto: `Con las reglas nuevas te registras con ${money(o[1][2])}.` }} />
-            <Slider id="sem" label="Semanas cotizadas" valor={f.sem.toLocaleString('es-MX')} min={500} max={2000} step={25} value={f.sem} onChange={set('sem')} />
-            <Slider id="m" label="Años en Modalidad 40" valor={f.m + (f.m === 1 ? ' año' : ' años')} min={1} max={5} value={f.m} onChange={set('m')} />
+        <div className="cambio">
+          <p className="cambio-fecha"><Icon name="calendar" size={18} />Desde el 22 de octubre de 2026 las reglas para quien entra nuevo cambiaron.</p>
+          <div className="cambio-par">
+            <article className="cambio-c antes">
+              <h3>Antes</h3>
+              <p>{M40_TEXTOS.antes}</p>
+            </article>
+            <article className="cambio-c ahora">
+              <h3>Ahora</h3>
+              <p>{M40_TEXTOS.ahora}</p>
+            </article>
           </div>
-        </aside>
+        </div>
 
-        <div className="out">
-          <div className="gain" aria-live="polite">
-            <span className="gain-tag">Con las reglas nuevas ganas</span>
-            <div className="gain-n">+<Num value={ganancia} /></div>
-            <p>
-              {ganancia > 0
-                ? 'al mes frente a no hacer nada · pensión a los 65, en pesos de hoy'
-                : `Tu pensión ya es la mínima garantizada (${money(P.sm)}). Sube el sueldo o las semanas para ver el efecto.`}
-            </p>
+        <div className="sim">
+          <div className="tarjeta sim-datos">
+            <Campo id="u" label="¿Cuál fue tu último sueldo al mes?" ayuda={AYUDA.u} format={money} min={1} max={500000} step={500} curva={2.6} value={m40.ur} onChange={set('ur')} />
+            <Campo
+              id="sem"
+              label="¿Cuántas semanas llevas cotizadas?"
+              ayuda={`Equivalen a unos ${(m40.sem / 52).toFixed(1)} años. ${AYUDA.sem}`}
+              format={(v) => entero(v) + ' sem'}
+              min={52} max={2600} step={13}
+              value={m40.sem}
+              onChange={set('sem')}
+            />
+            <Campo id="m" label="¿Cuántos años pagarías en Modalidad 40?" ayuda={AYUDA.m} format={anios} min={1} max={10} value={m40.m} onChange={set('m')} />
           </div>
 
-          <section className="card" aria-labelledby="t-m40">
-            <header className="card-h">
-              <h2 id="t-m40">Pensión mensual por escenario</h2>
-              <span className="badge-est">Estimación</span>
-            </header>
-            <div className="bars">
-              {o.map((r, i) => (
-                <div className="bar-row" key={r[0]}>
-                  <div className="bar-head">
-                    <b>{NOMBRES[i]}</b>
-                    <span className="bar-n"><Num value={r[1]} /></span>
-                  </div>
-                  <div className="bar-track">
-                    <div className="bar-fill" style={{ width: (r[1] / mx) * 100 + '%', background: COLORES[i] }} />
-                  </div>
-                  {r[2] ? (
-                    <small className="bar-cost">
-                      Cuota: {money(r[2] * 0.14438)} al mes · {money(r[2] * 0.14438 * 12 * f.m)} en {f.m} {f.m === 1 ? 'año' : 'años'}
-                    </small>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <details className="more">
-            <summary>Reglas, avisos y cálculo</summary>
-            <p>
-              Con las reglas nuevas ganas {money(ganancia)} al mes; con las anteriores habrías ganado {money(o[2][1] - o[0][1])}. Si tu pensión sale igual al salario mínimo ({money(P.sm)}), es la pensión mínima garantizada.
-            </p>
-            <p>
-              <b>Quien ya estaba inscrito</b> antes del 22 de octubre conserva sus condiciones hasta terminar el periodo que contrató. El IMSS revisará en 6 meses si el esquema sigue.
-            </p>
-            <p>
-              Aplica a la Ley 73. Se calcula sobre el promedio de tus últimos 5 años de sueldo (250 semanas). Cuota 2026: 14.438% del sueldo con que te registras (sube hasta 18.80% en 2030). No incluye asignaciones familiares.
-            </p>
-          </details>
-
-          <p className="est"><Icon name="info" size={15} />Estimaciones sujetas a supuestos. No son asesoría financiera.</p>
+          <div className="sim-res" aria-live="polite">
+            <h3>Tu pensión a los 65 años</h3>
+            <p className="sim-res-sub">Al mes y en pesos de hoy, con la fórmula de la Ley 73.</p>
+            {!res.aprox && res.gana > 0 && (
+              <p className="cifra-grande">
+                <span className="cifra-grande-l">Con las reglas nuevas ganas</span>
+                +<Num value={res.gana} /> <small>al mes</small>
+              </p>
+            )}
+            <Barras filas={filas} etiqueta="Pensión mensual en cada escenario de Modalidad 40" />
+            <p className="msg">{res.msg}</p>
+            <Nota tono="aviso">{M40_TEXTOS.inscritos}</Nota>
+            <details className="mas">
+              <summary>
+                <span>Cómo calculamos esto</span>
+                <Icon name="chevron" size={18} strokeWidth={2} />
+              </summary>
+              <div className="mas-c"><p>{M40_TEXTOS.como}</p></div>
+            </details>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

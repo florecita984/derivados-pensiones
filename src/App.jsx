@@ -1,72 +1,81 @@
-import { useCallback, useEffect, useState } from 'react'
-import Navbar from './components/Navbar.jsx'
-import Footer from './components/Footer.jsx'
-import Inicio from './components/Inicio.jsx'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { LazyMotion, MotionConfig } from 'motion/react'
+import Nav from './components/Nav.jsx'
+import Hero from './components/Hero.jsx'
 import MiPension from './components/MiPension.jsx'
+import Capitulos from './components/Capitulos.jsx'
 import Modalidad40 from './components/Modalidad40.jsx'
-import ComoFunciona from './components/ComoFunciona.jsx'
-import Ahorra from './components/Ahorra.jsx'
+import Ahorrar from './components/Ahorrar.jsx'
+import Aviso from './components/Aviso.jsx'
+import Cierre from './components/Cierre.jsx'
+import { calcPension, retiroMinimo } from './lib/pension.js'
+import { calcM40 } from './lib/m40.js'
+import { calcAhorro, compararConLeyes } from './lib/ahorro.js'
 
-const VISTAS = [
-  { id: 'inicio', texto: 'Inicio' },
-  { id: 'simulador', texto: 'Simulador' },
-  { id: 'ahorra', texto: 'Ahorra' },
-  { id: 'modalidad-40', texto: 'Modalidad 40' },
-  { id: 'aprende', texto: 'Aprende' },
-]
+// Valores iniciales: los mismos de la calculadora de referencia.
+const CASO = { edad: 30, sbc: 20000, ini: 2018, ret: 65, aho: 0, esp: false, hij: 0, pad: 0 }
+const M40 = { ur: 5000, sem: 1000, m: 5 }
+const PLAN = { s0: 0, sm: 1500, rt: 5, ys: 40, inf: 4, goal: 3000000 }
 
-const desdeHash = () => {
-  const id = window.location.hash.replace(/^#\/?/, '')
-  return VISTAS.some((v) => v.id === id) ? id : 'inicio'
-}
+// Las funciones de animación se descargan aparte: la página se pinta sin esperarlas.
+const funcionesMotion = () => import('./funciones-motion.js').then((r) => r.default)
+
+// Enlaces de la versión anterior (#/simulador, ...) a la sección equivalente de la landing.
+const RUTAS_VIEJAS = { simulador: 'mi-pension', ahorra: 'ahorrar', aprende: 'como-funciona' }
 
 export default function App() {
-  const [vista, setVista] = useState(desdeHash)
-  // Al venir de una actividad, el simulador se reinicia con los datos de esa actividad.
-  const [reto, setReto] = useState({ key: 0, datos: undefined })
+  const [caso, setCaso] = useState(CASO)
+  const [x11, setX11] = useState(false)
+  const [m40, setM40] = useState(M40)
+  const [plan, setPlan] = useState(PLAN)
 
-  const ir = useCallback((id, datos) => {
-    if (datos) setReto((r) => ({ key: r.key + 1, datos }))
-    setVista(id)
-    window.history.pushState(null, '', '#/' + (id === 'inicio' ? '' : id))
-    window.scrollTo({ top: 0 })
+  // La edad de retiro siempre va después de la edad actual, como en la referencia.
+  const setC = useCallback(
+    (k) => (v) =>
+      setCaso((p) => {
+        const n = { ...p, [k]: v }
+        if (k === 'edad') n.ret = Math.max(n.ret, retiroMinimo(v))
+        return n
+      }),
+    [],
+  )
+  const setM = useCallback((k) => (v) => setM40((p) => ({ ...p, [k]: v })), [])
+  const setP = useCallback((k) => (v) => setPlan((p) => ({ ...p, [k]: v })), [])
+
+  const r = useMemo(() => calcPension(caso, x11), [caso, x11])
+  const res40 = useMemo(() => calcM40(m40), [m40])
+  const h = useMemo(() => calcAhorro(plan), [plan])
+  const k = useMemo(() => compararConLeyes(r, h), [r, h])
+
+  const irA = useCallback((id) => {
+    const el = document.getElementById(id)
+    if (!el) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+    window.history.replaceState(null, '', id === 'inicio' ? window.location.pathname : '#' + id)
   }, [])
 
   useEffect(() => {
-    const alCambiar = () => {
-      // Los anclajes internos (p. ej. "Saltar al contenido") no son rutas: no cambian la vista.
-      if (window.location.hash && !window.location.hash.startsWith('#/')) return
-      setVista(desdeHash())
-      window.scrollTo({ top: 0 })
-    }
-    window.addEventListener('popstate', alCambiar)
-    window.addEventListener('hashchange', alCambiar)
-    return () => {
-      window.removeEventListener('popstate', alCambiar)
-      window.removeEventListener('hashchange', alCambiar)
-    }
+    const id = window.location.hash.replace(/^#\/?/, '')
+    const el = document.getElementById(RUTAS_VIEJAS[id] || id)
+    if (el) requestAnimationFrame(() => el.scrollIntoView())
   }, [])
 
-  useEffect(() => {
-    const t = VISTAS.find((v) => v.id === vista)
-    document.title = (vista === 'inicio' ? '' : t.texto + ' · ') + 'Pensiones IMSS · Ley 73 vs Ley 97'
-  }, [vista])
-
-  // Las vistas se quedan montadas para no perder lo que el usuario movió en el simulador.
   return (
-    <>
-      <a className="skip" href="#contenido">Saltar al contenido</a>
-      <Navbar vistas={VISTAS} vista={vista} ir={ir} />
-
-      <main className="main" id="contenido">
-        <div hidden={vista !== 'inicio'}><Inicio ir={ir} /></div>
-        <div hidden={vista !== 'simulador'}><MiPension key={reto.key} inicial={reto.datos} /></div>
-        <div hidden={vista !== 'modalidad-40'}><Modalidad40 /></div>
-        <div hidden={vista !== 'aprende'}><ComoFunciona /></div>
-        <div hidden={vista !== 'ahorra'}><Ahorra /></div>
+    <LazyMotion features={funcionesMotion} strict>
+    <MotionConfig reducedMotion="user">
+      <a className="saltar" href="#mi-pension">Saltar a la calculadora</a>
+      <Nav irA={irA} />
+      <main>
+        <Hero caso={caso} set={setC} r={r} irA={irA} />
+        <MiPension caso={caso} set={setC} x11={x11} setX11={setX11} r={r} />
+        <Capitulos r={r} h={h} />
+        <Modalidad40 m40={m40} set={setM} res={res40} />
+        <Ahorrar plan={plan} set={setP} h={h} k={k} r={r} irA={irA} />
+        <Aviso />
       </main>
-
-      <Footer vistas={VISTAS} ir={ir} />
-    </>
+      <Cierre irA={irA} />
+    </MotionConfig>
+    </LazyMotion>
   )
 }

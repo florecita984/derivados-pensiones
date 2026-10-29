@@ -1,173 +1,122 @@
-import { useMemo, useState } from 'react'
-import Slider from './Slider.jsx'
-import Chart from './Chart.jsx'
-import ResultCard from './ResultCard.jsx'
+import { useRef } from 'react'
+import Campo, { Contador, Interruptor } from './Campo.jsx'
+import GraficaEdades from './GraficaEdades.jsx'
+import Num from './Num.jsx'
 import Icon from './Icon.jsx'
-import { PageHead, DiffPill, Alerta } from './ui.jsx'
-import { calcPension, money, P } from '../lib/calc.js'
-import { comparar } from '../lib/comparar.js'
-import { MI_CASO, PERSONA_A, PERSONA_B } from '../lib/personas.js'
+import { Titulo, VerTabla, useVisible } from './ui.jsx'
+import { money } from '../lib/formato.js'
+import { retiroMinimo } from '../lib/pension.js'
+import { AYUDA, SUPUESTOS } from '../lib/contenido.js'
 
-const EJEMPLOS = [
-  ['Mi caso', MI_CASO],
-  ['Persona A', PERSONA_A, 'Empezó a cotizar en 1995'],
-  ['Persona B', PERSONA_B, 'Empezó a cotizar en 2005'],
-]
+const anios = (v) => v + ' años'
 
-const TOPE_UMA = 25 * P.uma
+// Resultado de una ley. La que le toca a la persona lleva la marca "Tu ley".
+function Ley({ ley, nombre, tu, monto, aprox, detalle }) {
+  return (
+    <article className={'ley ley-' + ley + (tu ? ' tu' : '')}>
+      <header>
+        <span className="ley-nombre"><i className={'clave clave-' + ley} />{nombre}</span>
+        {tu && <span className="ley-tu"><Icon name="check" size={14} strokeWidth={2.6} />Tu ley</span>}
+      </header>
+      <p className="ley-monto">
+        {aprox && <span aria-label="aproximadamente">≈ </span>}
+        <Num value={monto} />
+        <small>al mes</small>
+      </p>
+      <p className="ley-detalle">{detalle}</p>
+    </article>
+  )
+}
 
-export default function MiPension({ inicial }) {
-  const [f, setF] = useState(inicial || MI_CASO)
-  const [x11, setX11] = useState(false)
-  const set = (k) => (v) => setF((p) => ({ ...p, [k]: v }))
-
-  const r = useMemo(() => calcPension(f, x11), [f, x11])
-  const { a, b, d, mi73 } = r
-  const cmp = a.falta ? null : comparar(a.p, b.p)
-
-  // Retroalimentación por campo (solo mensajes; no modifica ningún cálculo).
-  const avisoSbc =
-    f.sbc > TOPE_UMA
-      ? { tono: 'warn', texto: `Supera el tope de 25 UMA (${money(TOPE_UMA)}). En la Ley 97 se cotiza hasta ese límite.` }
-      : null
-  const avisoIni =
-    2026 - f.ini > f.edad - 16
-      ? { tono: 'warn', texto: `Se consideran cotizaciones desde los 16 años: ${d.anios} años cotizados.` }
-      : { tono: 'ok', texto: `Te corresponde la Ley ${mi73 ? '73' : '97'} · ${d.anios} años cotizados.` }
-  const avisoRet =
-    f.ret < 65 && mi73
-      ? { tono: 'info', texto: `En la Ley 73 la pensión baja ${(65 - f.ret) * 5}% por retirarte antes de los 65.` }
-      : null
-  const avisoAho =
-    f.aho === 0 ? { tono: 'info', texto: 'Sin dato: lo estimamos con tu sueldo y tus años cotizados.' } : null
+export default function MiPension({ caso, set, x11, setX11, r }) {
+  const form = useRef(null)
+  const res = useRef(null)
+  // En móvil, mientras los datos tapan los resultados, una barra fija los resume.
+  const formVisible = useVisible(form)
+  const resVisible = useVisible(res, '0px 0px -30% 0px')
+  const verMini = formVisible && !resVisible
 
   return (
-    <div className="page wrap">
-      {/* Resumen fijo para pantallas pequeñas: los resultados siempre a la vista al mover los controles. */}
-      <div className="mini" role="status" aria-label="Resumen de pensión mensual">
-        <div className="mini-i mini-73"><small>Ley 73</small><b>{a.falta ? 'Sin derecho' : money(a.p)}</b></div>
-        <div className="mini-i mini-97"><small>Ley 97</small><b>{money(b.p)}</b></div>
-      </div>
+    <section className="seccion" id="mi-pension" aria-labelledby="t-mi">
+      <div className="envoltura">
+        <Titulo id="t-mi" lead="Estos datos se usan en toda la página: lo que muevas aquí cambia también el comprobante de arriba y las comparaciones de abajo.">
+          Tu pensión, con todos tus datos
+        </Titulo>
 
-      <PageHead chip="Simulador" title="Tu pensión, cara a cara" />
-
-      <div className="sim">
-        {/* ---------- Controles ---------- */}
-        <aside className="ctrl" aria-label="Datos del simulador">
-          <div className="ctrl-h">
-            <h2>Tus datos</h2>
-            <button className="icon-btn" onClick={() => setF(MI_CASO)} aria-label="Restablecer datos" title="Restablecer">
-              <Icon name="rotate" size={18} />
-            </button>
+        <div className="sim">
+          <div className="tarjeta sim-datos" ref={form}>
+            <fieldset>
+              <legend>Tú</legend>
+              <Campo id="edad" label="¿Cuántos años tienes?" format={anios} min={15} max={74} value={caso.edad} onChange={set('edad')} />
+              <Campo id="sbc" label="¿Cuánto ganas al mes?" ayuda={AYUDA.sbc} format={money} min={0} max={500000} step={1000} curva={2.6} value={caso.sbc} onChange={set('sbc')} />
+              <Campo id="ini" label="¿En qué año empezaste a trabajar con seguro social (IMSS)?" ayuda={AYUDA.ini} min={1930} max={2026} value={caso.ini} onChange={set('ini')} />
+            </fieldset>
+            <fieldset>
+              <legend>Tu retiro</legend>
+              <Campo id="ret" label="¿A qué edad te quieres retirar?" ayuda={AYUDA.ret} format={anios} min={retiroMinimo(caso.edad)} max={75} value={caso.ret} onChange={set('ret')} />
+              <Campo
+                id="aho"
+                label="¿Cuánto dinero tienes ahorrado en tu Afore?"
+                ayuda={AYUDA.aho}
+                format={money}
+                mostrar={caso.aho > 0 ? undefined : 'Lo estimamos'}
+                min={0} max={20000000} step={100000} curva={2.4}
+                value={caso.aho}
+                onChange={set('aho')}
+              />
+            </fieldset>
+            <fieldset>
+              <legend>Tu familia</legend>
+              <Interruptor id="esp" label="Tengo esposa(o) o pareja que depende de mí" ayuda={AYUDA.esp} checked={caso.esp} onChange={set('esp')} />
+              <Contador id="hij" label="Hijos que dependen de ti" ayuda={AYUDA.hij} min={0} max={10} value={caso.hij} onChange={set('hij')} />
+              <Contador id="pad" label="Padres que dependen de ti" ayuda={AYUDA.pad} min={0} max={2} value={caso.pad} onChange={set('pad')} />
+            </fieldset>
           </div>
 
-          <div className="seg" role="group" aria-label="Casos de ejemplo">
-            {EJEMPLOS.map(([t, v, tip]) => (
-              <button key={t} title={tip} onClick={() => setF(v)}>{t}</button>
-            ))}
+          <div className="sim-res" ref={res} aria-live="polite">
+            <h3>Tu pensión mensual al retirarte</h3>
+            <p className="sim-res-sub">A los {caso.ret} años, en pesos de {r.anioRetiro}.</p>
+            <div className="leyes">
+              <Ley ley="73" nombre="Ley 73 (la de antes)" tu={r.mi73} monto={r.a.p} aprox={r.a.ap} detalle={r.textos.r73} />
+              <Ley ley="97" nombre="Ley 97 (la actual)" tu={!r.mi73} monto={r.b.p} detalle={r.textos.r97} />
+            </div>
+            <p className="msg">{r.msg}</p>
+            {r.avisos.length > 0 && (
+              <ul className="avisos">
+                {r.avisos.map((a) => (
+                  <li key={a}><Icon name="alert" size={16} strokeWidth={2} />{a}</li>
+                ))}
+              </ul>
+            )}
           </div>
+        </div>
 
-          <fieldset className="grp">
-            <legend>Sobre ti</legend>
-            <Slider id="edad" label="Edad actual" valor={f.edad + ' años'} min={20} max={59} value={f.edad} onChange={set('edad')} />
-            <Slider
-              id="sbc"
-              label="Sueldo mensual"
-              valor={money(f.sbc)}
-              ayuda="Antes de descuentos."
-              min={8000} max={120000} step={1000} value={f.sbc} onChange={set('sbc')}
-              aviso={avisoSbc}
-            />
-            <Slider
-              id="ini"
-              label="Año en que empezaste a cotizar"
-              valor={f.ini}
-              min={1980} max={2026} value={f.ini} onChange={set('ini')}
-              aviso={avisoIni}
-            />
-          </fieldset>
-
-          <fieldset className="grp">
-            <legend>Tu retiro</legend>
-            <Slider
-              id="ret"
-              label="Edad de retiro"
-              valor={f.ret + ' años'}
-              min={60} max={65} value={f.ret} onChange={set('ret')}
-              aviso={avisoRet}
-            />
-            <Slider
-              id="aho"
-              label="Ahorro en tu Afore"
-              valor={f.aho > 0 ? money(f.aho) : 'Por estimar'}
-              min={0} max={3000000} step={50000} value={f.aho} onChange={set('aho')}
-              aviso={avisoAho}
-            />
-            <label className="switch">
-              <input type="checkbox" id="par" checked={f.par} onChange={(e) => set('par')(e.target.checked)} />
-              <span className="switch-ui" aria-hidden="true" />
-              <span className="switch-t">
-                <b>Pareja dependiente</b>
-                <small>Suma 15% en la Ley 73</small>
-              </span>
-            </label>
-          </fieldset>
-        </aside>
-
-        {/* ---------- Resultados ---------- */}
-        <div className="out">
-          <div className="rc-row" aria-label={`Pensión mensual estimada con retiro a los ${f.ret} años`}>
-            <ResultCard
-              ley="73"
-              subtitulo="Se basa en tu salario"
-              monto={a.p}
-              sinDerecho={a.falta}
-              esTuLey={mi73}
-              tasa={a.falta ? null : (a.p / a.ult) * 100}
-              tasaTxt={a.falta ? r.ratio73 : 'de tu último sueldo'}
-            />
-            <ResultCard
-              ley="97"
-              subtitulo="Se basa en tu ahorro"
-              monto={b.p}
-              esTuLey={!mi73}
-              tasa={(b.p / b.ult) * 100}
-              tasaTxt="de tu último sueldo"
-            />
-          </div>
-
-          {cmp && <DiffPill cmp={cmp} />}
-          {r.msg && <p className="line-msg">{r.msg}</p>}
-          {r.adv && <Alerta>{r.adv}</Alerta>}
-
-          <section className="card" aria-labelledby="t-chart">
-            <header className="card-h">
-              <h2 id="t-chart">Pensión según la edad de retiro</h2>
-              <span className="badge-est">Estimación</span>
-            </header>
-            <Chart rows={r.rows} retiro={f.ret} />
-          </section>
-
-          <details className="more">
-            <summary>Detalles y supuestos</summary>
-            <dl className="facts">
-              <div><dt>Semanas al retiro</dt><dd>{Math.round(b.sem).toLocaleString('es-MX')}</dd></div>
-              <div><dt>Último sueldo estimado</dt><dd>{money(a.ult)}</dd></div>
-              <div><dt>Saldo estimado en la Afore</dt><dd>{money(b.saldo)}</dd></div>
-              <div><dt>Pensión garantizada Ley 97</dt><dd>{money(b.g)}</dd></div>
-            </dl>
-            <p>
-              Tu sueldo sube 4.5% al año; UMA y salario mínimo, 3.5%; tu Afore rinde 7% anual. UMA 2026: $3,566.22 al mes. Salario mínimo 2026: $315.04 diarios. Las cifras están en pesos del año en que te retiras.
-            </p>
-            <label className="check">
-              <input type="checkbox" id="x11" checked={x11} onChange={(e) => setX11(e.target.checked)} />
-              <span>Sumar el 11% extra que aparece en el material de clase</span>
-            </label>
+        <div className="tarjeta grafica" aria-labelledby="t-edades">
+          <h3 id="t-edades">¿Y si me retiro a otra edad?</h3>
+          <p className="grafica-sub">Pensión mensual según la edad de retiro, de 60 a 75 años. Toca una edad para elegirla.</p>
+          <GraficaEdades filas={r.filas} ret={caso.ret} onRet={set('ret')} />
+          <VerTabla columnas={['Edad de retiro', 'Ley 73', 'Ley 97']} filas={r.filas.map(([e, a, b]) => [e + ' años', money(a), money(b)])} />
+          <details className="mas">
+            <summary>
+              <span>Supuestos que usamos</span>
+              <Icon name="chevron" size={18} strokeWidth={2} />
+            </summary>
+            <div className="mas-c">
+              <p>{SUPUESTOS}</p>
+              <label className="casilla">
+                <input type="checkbox" checked={x11} onChange={(e) => setX11(e.target.checked)} />
+                <span>Sumar 11% a toda la pensión, como en el material de clase (la ley lo aplica solo a la pensión mínima)</span>
+              </label>
+            </div>
           </details>
-
-          <p className="est"><Icon name="info" size={15} />Estimaciones sujetas a supuestos. No son asesoría financiera.</p>
         </div>
       </div>
-    </div>
+
+      <button type="button" className={'mini' + (verMini ? ' on' : '')} onClick={() => res.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })} tabIndex={verMini ? 0 : -1} aria-hidden={!verMini}>
+        <span><small><i className="clave clave-73" />Ley 73</small><b>{r.textos.p73}</b></span>
+        <span><small><i className="clave clave-97" />Ley 97</small><b>{r.textos.p97}</b></span>
+        <span className="mini-ver">Ver <Icon name="down" size={15} strokeWidth={2.2} /></span>
+      </button>
+    </section>
   )
 }
