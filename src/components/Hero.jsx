@@ -5,13 +5,14 @@ import Num from './Num.jsx'
 import { Plastilina } from './ui.jsx'
 import { money } from '../lib/formato.js'
 import { AYUDA } from '../lib/contenido.js'
+import { RANGO_SBC } from '../lib/pension.js'
 
 const EASE = [0.16, 1, 0.3, 1]
 
 // Las tres cifras de la frase y cómo se editan (mismos rangos que el simulador completo).
 const CIFRAS = {
   edad: { etiqueta: '¿Cuántos años tienes?', min: 15, max: 74, format: (v) => v + ' años' },
-  sbc: { etiqueta: '¿Cuánto ganas al mes?', min: 0, max: 500000, step: 1000, curva: 2.6, format: money, ayuda: AYUDA.sbc },
+  sbc: { etiqueta: 'Salario base de cotización al mes, el registrado ante el IMSS', ...RANGO_SBC, format: money, ayuda: AYUDA.sbc },
   ini: { etiqueta: '¿En qué año empezaste a trabajar con seguro social (IMSS)?', min: 1930, max: 2026, format: String, ayuda: AYUDA.ini },
 }
 
@@ -156,6 +157,8 @@ export default function Hero({ caso, set, r, irA }) {
                     max={c.max}
                     step={c.step}
                     curva={c.curva}
+                    razonMin={c.razonMin}
+                    razonMax={c.razonMax}
                     format={c.format}
                   />
                   <button type="button" className="btn btn-sec btn-chico" onClick={() => setEditando(null)}>Listo</button>

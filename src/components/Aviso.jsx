@@ -17,7 +17,14 @@ export default function Aviso() {
         <div className="fuentes">
           <h3>Fuentes</h3>
           <ol>
-            {FUENTES.map((f) => <li key={f}>{f}</li>)}
+            {FUENTES.map((f) => {
+              const { texto, url } = typeof f === 'string' ? { texto: f } : f
+              return (
+                <li key={texto}>
+                  {url ? <a href={url} target="_blank" rel="noopener noreferrer">{texto}</a> : texto}
+                </li>
+              )
+            })}
           </ol>
         </div>
       </div>

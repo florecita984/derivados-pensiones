@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "node --test src/lib/paridad.test.js",
+    "test": "node --test src/lib/paridad.test.js src/lib/ley.test.js",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -5,7 +5,7 @@ import Num from './Num.jsx'
 import Icon from './Icon.jsx'
 import { Titulo, VerTabla, useVisible } from './ui.jsx'
 import { money } from '../lib/formato.js'
-import { retiroMinimo } from '../lib/pension.js'
+import { retiroMinimo, RANGO_SBC } from '../lib/pension.js'
 import { AYUDA, SUPUESTOS } from '../lib/contenido.js'
 
 const anios = (v) => v + ' años'
@@ -48,7 +48,7 @@ export default function MiPension({ caso, set, x11, setX11, r }) {
             <fieldset>
               <legend>Tú</legend>
               <Campo id="edad" label="¿Cuántos años tienes?" format={anios} min={15} max={74} value={caso.edad} onChange={set('edad')} />
-              <Campo id="sbc" label="¿Cuánto ganas al mes?" ayuda={AYUDA.sbc} format={money} min={0} max={500000} step={1000} curva={2.6} value={caso.sbc} onChange={set('sbc')} />
+              <Campo id="sbc" label="Salario base de cotización al mes, el registrado ante el IMSS" ayuda={AYUDA.sbc} format={money} {...RANGO_SBC} value={caso.sbc} onChange={set('sbc')} />
               <Campo id="ini" label="¿En qué año empezaste a trabajar con seguro social (IMSS)?" ayuda={AYUDA.ini} min={1930} max={2026} value={caso.ini} onChange={set('ini')} />
             </fieldset>
             <fieldset>
@@ -105,7 +105,7 @@ export default function MiPension({ caso, set, x11, setX11, r }) {
               <p>{SUPUESTOS}</p>
               <label className="casilla">
                 <input type="checkbox" checked={x11} onChange={(e) => setX11(e.target.checked)} />
-                <span>Sumar 11% a toda la pensión, como en el material de clase (la ley lo aplica solo a la pensión mínima)</span>
+                <span>Ley 73: sumar 11% a toda la pensión, como en el material de clase (el IMSS lo aplica a la pensión mínima, que ya lo incluye). No cambia la Ley 97.</span>
               </label>
             </div>
           </details>

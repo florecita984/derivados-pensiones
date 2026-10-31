@@ -5,16 +5,25 @@ import Icon from './Icon.jsx'
 import { Nota, Plastilina, Titulo } from './ui.jsx'
 import { money, anios, entero } from '../lib/formato.js'
 import { AYUDA, M40_TEXTOS } from '../lib/contenido.js'
+import { RANGO_SBC } from '../lib/pension.js'
 
 const CLASE = { sin: 'gris', ahora: '73', antes: '73c' }
+
+// Solo cambian los nombres que se muestran; los cálculos siguen en lib/m40.js.
+const nombreEscenario = (id, años) =>
+  ({
+    sin: 'Sin Modalidad 40',
+    ahora: `Con Modalidad 40 (${anios(años)}) · regla nueva, al máximo (último salario + 1 UMA)`,
+    antes: `Con Modalidad 40 (${anios(años)}) · regla anterior`,
+  })[id]
 
 export default function Modalidad40({ m40, set, res }) {
   const filas = res.opciones.map((o) => ({
     id: o.id,
-    nombre: o.nombre,
+    nombre: nombreEscenario(o.id, m40.m),
     valor: o.p,
     partes: [[CLASE[o.id], o.p]],
-    sub: o.sbc ? `Pagarías ${money(o.cuota)} al mes (${money(o.total)} en total)` : null,
+    sub: o.sbc ? `Pagarías ${money(o.cuota)} al mes el primer año; ${money(o.total)} en total, porque la cuota sube cada año` : null,
   }))
 
   return (
@@ -41,7 +50,7 @@ export default function Modalidad40({ m40, set, res }) {
 
         <div className="sim">
           <div className="tarjeta sim-datos">
-            <Campo id="u" label="¿Cuál fue tu último sueldo al mes?" ayuda={AYUDA.u} format={money} min={1} max={500000} step={500} curva={2.6} value={m40.ur} onChange={set('ur')} />
+            <Campo id="u" label="Último salario base de cotización registrado ante el IMSS (al mes)" ayuda={AYUDA.u} format={money} {...RANGO_SBC} value={m40.ur} onChange={set('ur')} />
             <Campo
               id="sem"
               label="¿Cuántas semanas llevas cotizadas?"
@@ -56,10 +65,10 @@ export default function Modalidad40({ m40, set, res }) {
 
           <div className="sim-res" aria-live="polite">
             <h3>Tu pensión a los 65 años</h3>
-            <p className="sim-res-sub">Al mes y en pesos de hoy, con la fórmula de la Ley 73.</p>
+            <p className="sim-res-sub">Estimación, no garantizada: al mes, en pesos de hoy y con la fórmula de la Ley 73. Calculamos con un salario base de cotización de <b>{money(res.u)}</b> al mes.</p>
             {!res.aprox && res.gana > 0 && (
               <p className="cifra-grande">
-                <span className="cifra-grande-l">Con las reglas nuevas ganas</span>
+                <span className="cifra-grande-l">Con las reglas nuevas, estimamos que subirías</span>
                 +<Num value={res.gana} /> <small>al mes</small>
               </p>
             )}

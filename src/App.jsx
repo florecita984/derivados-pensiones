@@ -14,7 +14,7 @@ import { calcAhorro, compararConLeyes } from './lib/ahorro.js'
 
 // Valores iniciales: los mismos de la calculadora de referencia.
 const CASO = { edad: 30, sbc: 20000, ini: 2018, ret: 65, aho: 0, esp: false, hij: 0, pad: 0 }
-const M40 = { ur: 5000, sem: 1000, m: 5 }
+const M40 = { ur: 15000, sem: 1000, m: 5 }
 const PLAN = { s0: 0, sm: 1500, rt: 5, ys: 40, inf: 4, goal: 3000000 }
 
 // Las funciones de animación se descargan aparte: la página se pinta sin esperarlas.

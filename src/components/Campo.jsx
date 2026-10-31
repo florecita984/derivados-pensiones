@@ -15,8 +15,10 @@ function leer(texto, decimal) {
 // referencia, lo escrito no se redondea al paso del deslizador si el paso es mayor que 1).
 //   curva > 1 da más recorrido a los valores bajos: con sueldos de $0 a $500,000, los
 //   $20,000 de un sueldo común quedarían pegados al inicio de un deslizador lineal.
-export default function Campo({ id, label, ayuda, value, onChange, min, max, step = 1, curva = 1, format = String, mostrar }) {
+//   razonMin / razonMax: si lo escrito cae fuera del rango se avisa por qué y con qué cifra se calcula.
+export default function Campo({ id, label, ayuda, value, onChange, min, max, step = 1, curva = 1, format = String, mostrar, razonMin, razonMax }) {
   const [borrador, setBorrador] = useState(null)
+  const [aviso, setAviso] = useState(null)
   const cancelado = useRef(false)
   const decimal = step < 1
   const texto = mostrar ?? format(value)
@@ -26,16 +28,33 @@ export default function Campo({ id, label, ayuda, value, onChange, min, max, ste
     return step <= 1 ? Math.round(x / step) * step : x
   }
   const enPos = (v) => (max > min ? Math.round(POS * Math.pow((v - min) / (max - min), 1 / curva)) : POS)
-  const dePos = (p) => Math.min(max, Math.max(min, min + Math.round(((max - min) * Math.pow(p / POS, curva)) / step) * step))
-  const curvo = curva !== 1
+  // Si el mínimo no es múltiplo del paso (p. ej. el salario mínimo), los valores se redondean al paso y no a partir del mínimo.
+  const desdeCero = step > 1 && min % step !== 0
+  const dePos = (p) => {
+    if (desdeCero && p <= 0) return min // los extremos son exactos: el salario mínimo y el tope
+    if (desdeCero && p >= POS) return max
+    const crudo = min + (max - min) * Math.pow(p / POS, curva)
+    const v = desdeCero ? Math.round(crudo / step) * step : min + Math.round((crudo - min) / step) * step
+    return Math.min(max, Math.max(min, v))
+  }
+  const curvo = curva !== 1 || desdeCero
   const rango = curvo
     ? { min: 0, max: POS, step: 1, value: enPos(value), onChange: (e) => onChange(dePos(+e.target.value)) }
     : { min, max, step, value, onChange: (e) => onChange(+e.target.value) }
   const pct = rango.max > rango.min ? ((rango.value - rango.min) / (rango.max - rango.min)) * 100 : 100
+  const mover = (f) => (e) => {
+    setAviso(null)
+    f(e)
+  }
 
   const confirmar = (t) => {
     const n = leer(t, decimal)
-    if (!cancelado.current && n != null) onChange(ajustar(n))
+    if (!cancelado.current && n != null) {
+      onChange(ajustar(n))
+      if (n < min) setAviso(`Escribiste ${format(n)}, pero ${razonMin ?? 'es menos del mínimo permitido'}. Calculamos con ${format(min)}.`)
+      else if (n > max) setAviso(`Escribiste ${format(n)}, pero ${razonMax ?? 'es más del máximo permitido'}. Calculamos con ${format(max)}.`)
+      else setAviso(null)
+    }
     cancelado.current = false
     setBorrador(null)
   }
@@ -69,11 +88,13 @@ export default function Campo({ id, label, ayuda, value, onChange, min, max, ste
         />
       </div>
       {ayuda && <p className="campo-ayuda">{ayuda}</p>}
+      {aviso && <p className="campo-aviso" role="status">{aviso}</p>}
       <input
         type="range"
         className="rango"
         id={id}
         {...rango}
+        onChange={mover(rango.onChange)}
         style={{ '--p': pct + '%' }}
         aria-valuetext={texto}
       />

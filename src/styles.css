@@ -283,6 +283,7 @@ b { font-weight: 650; }
 .campo-num:hover { border-color: var(--linea-2); background: var(--superficie); }
 .campo-num:focus { outline: none; border-color: var(--acento); background: #fff; box-shadow: 0 0 0 4px rgba(2, 106, 167, 0.14); }
 .campo-ayuda { display: block; margin-top: 4px; max-width: 62ch; font-size: 13.5px; line-height: 1.5; color: var(--tinta-3); }
+.campo-aviso { margin-top: 6px; max-width: 62ch; padding: 8px 12px; border-radius: 10px; font-size: 13.5px; line-height: 1.45; font-weight: 500; color: var(--tinta); background: var(--aviso-suave); border-left: 3px solid var(--aviso); }
 .campo-ext { display: flex; justify-content: space-between; margin-top: 2px; font-size: 12px; color: var(--tinta-3); font-variant-numeric: tabular-nums; }
 .campo-fila { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
 
@@ -456,6 +457,8 @@ b { font-weight: 650; }
 .aviso-lista dd { margin-top: 4px; font-size: 15px; color: var(--tinta-2); }
 .fuentes { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--linea); }
 .fuentes h3 { font: 600 16px var(--sans); letter-spacing: 0; }
+.fuentes a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--linea); }
+.fuentes a:hover, .fuentes a:focus-visible { text-decoration-color: currentColor; }
 .fuentes ol { display: grid; gap: 6px; margin-top: 12px; padding-left: 22px; list-style: decimal; font-size: 14px; color: var(--tinta-2); }
 
 /* ---------- Cierre y pie ---------- */

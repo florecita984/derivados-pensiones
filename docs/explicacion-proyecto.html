@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<title>Pensiones IMSS: cómo funciona todo el proyecto</title>
+<style>
+@page { size: A4; margin: 16mm 15mm 18mm; }
+:root { --azul: #1d6fcc; --azul-suave: #e8f1fc; --naranja: #e4602b; --naranja-suave: #fdeee6; --tinta: #1c1917; --tinta-2: #55524d; --linea: #d9dfe8; --verde: #2e7d4f; --verde-suave: #e6f3ec; }
+* { box-sizing: border-box; }
+html { font: 10.4pt/1.5 'Segoe UI', Arial, sans-serif; color: var(--tinta); }
+body { margin: 0; }
+h1, h2, h3, h4 { line-height: 1.2; margin: 0; }
+h2 { font-size: 18pt; color: var(--azul); margin: 0 0 8px; padding-top: 4px; border-top: 3px solid var(--azul); padding-top: 10px; }
+h3 { font-size: 12.5pt; margin: 16px 0 5px; color: var(--tinta); }
+h4 { font-size: 10.8pt; margin: 12px 0 3px; color: var(--azul); }
+p { margin: 5px 0; }
+ul, ol { margin: 4px 0 6px; padding-left: 20px; }
+li { margin: 2px 0; }
+code { font: 9pt Consolas, 'Courier New', monospace; background: #f2f4f8; padding: 0 3px; border-radius: 3px; }
+.sec { break-before: page; }
+.sec:first-of-type { break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 7px 0 10px; font-size: 9.2pt; break-inside: auto; }
+th, td { border: 1px solid var(--linea); padding: 4px 7px; text-align: left; vertical-align: top; }
+th { background: var(--azul-suave); color: #0f3d73; font-weight: 600; }
+tr { break-inside: avoid; }
+.caja { border-left: 4px solid var(--azul); background: var(--azul-suave); padding: 7px 12px; margin: 8px 0; border-radius: 0 6px 6px 0; break-inside: avoid; }
+.caja.n { border-left-color: var(--naranja); background: var(--naranja-suave); }
+.caja.v { border-left-color: var(--verde); background: var(--verde-suave); }
+.caja b:first-child { display: block; margin-bottom: 1px; }
+.flujo { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; margin: 10px 0; }
+.flujo > div { flex: 1 1 28%; border: 1.5px solid var(--azul); border-radius: 8px; padding: 6px 9px; font-size: 9pt; background: #fff; break-inside: avoid; }
+.flujo > div b { display: block; color: var(--azul); margin-bottom: 2px; }
+.flecha { flex: 0 0 100% !important; border: 0 !important; text-align: center; color: var(--naranja); font-weight: 700; padding: 0 !important; font-size: 13pt !important; background: none !important; }
+.paso { counter-increment: paso; position: relative; padding-left: 28px; margin: 5px 0; }
+.paso::before { content: counter(paso); position: absolute; left: 0; top: 1px; width: 20px; height: 20px; border-radius: 50%; background: var(--azul); color: #fff; font-size: 9pt; font-weight: 700; display: grid; place-items: center; text-align: center; line-height: 20px; }
+.pasos { counter-reset: paso; }
+.portada { height: 245mm; display: flex; flex-direction: column; justify-content: center; }
+.portada .marca { display: flex; gap: 6px; align-items: flex-end; height: 60px; margin-bottom: 18px; }
+.portada .marca i { width: 26px; border-radius: 13px; display: block; }
+.portada h1 { font-size: 32pt; color: var(--azul); }
+.portada p.sub { font-size: 14pt; color: var(--tinta-2); margin-top: 10px; max-width: 150mm; }
+.portada .meta { margin-top: 30px; font-size: 10pt; color: var(--tinta-2); border-top: 1px solid var(--linea); padding-top: 10px; }
+.toc { columns: 2; column-gap: 24px; font-size: 10pt; margin-top: 16px; }
+.toc div { break-inside: avoid; margin: 3px 0; }
+.peq { font-size: 8.8pt; color: var(--tinta-2); }
+.num { font-variant-numeric: tabular-nums; }
+.cuenta td:nth-child(2), .cuenta td:nth-child(3) { text-align: right; }
+</style>
+</head>
+<body>
+
+<!-- ============ PORTADA ============ -->
+<section class="portada">
+  <div class="marca"><i style="background:var(--azul);height:56px"></i><i style="background:var(--naranja);height:34px"></i></div>
+  <h1>Pensiones IMSS</h1>
+  <p class="sub">Cómo funciona todo el proyecto, pieza por pieza: qué archivo toma qué dato, de dónde lo saca y quién lo usa después.</p>
+  <div class="caja" style="max-width:150mm;margin-top:22px">
+    <b>Cómo leer este documento</b>
+    "Toma" quiere decir "recibe como entrada" y "entrega" quiere decir "devuelve como resultado".
+    Las secciones 3 y 4 son el mapa general; de la 5 a la 8 está cada archivo y cada fórmula, con ejemplos de números reales.
+  </div>
+  <div class="toc">
+    <div><b>1.</b> Qué es y qué hace</div>
+    <div><b>2.</b> Tecnología y carpetas</div>
+    <div><b>3.</b> El recorrido de un dato</div>
+    <div><b>4.</b> El estado en <code>App.jsx</code></div>
+    <div><b>5.</b> La lógica: <code>src/lib</code></div>
+    <div><b>6.</b> Las fórmulas con ejemplos</div>
+    <div><b>7.</b> Las pantallas: <code>src/components</code></div>
+    <div><b>8.</b> De dónde sale cada número</div>
+    <div><b>9.</b> Textos, estilos y animación</div>
+    <div><b>10.</b> Pruebas</div>
+    <div><b>11.</b> Material fuera de la app</div>
+    <div><b>12.</b> Límites y pendientes</div>
+    <div><b>13.</b> Cómo correrlo y publicarlo</div>
+    <div><b>14.</b> Glosario</div>
+  </div>
+  <div class="meta">Proyecto escolar del Equipo 2, Tema 9: Lucía Cárdenas, Flor Martínez, Carlos Contreras, Carlos Ipiña y María José Meza.<br>
+  Publicado en pensionesley.pensionesgema.com. Documento generado el 31 de octubre de 2026 a partir del código actual del repositorio.</div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section class="sec">
+<h2>1. Qué es y qué hace</h2>
+<p>Es una página web de una sola pantalla larga (una <i>landing</i>) que responde la pregunta <b>"¿cuánto me van a pagar de pensión?"</b>. La persona mueve controles (edad, salario, año en que empezó a cotizar, etc.) y la página recalcula al instante. No hay servidor, no hay base de datos y no se guarda nada: todo se calcula en el navegador, con JavaScript.</p>
+<h3>Las cuatro cosas que calcula</h3>
+<table>
+<tr><th style="width:24%">Sección</th><th>Qué responde</th><th style="width:30%">Función que calcula</th></tr>
+<tr><td>Mi pensión</td><td>Cuánto pagaría la <b>Ley 73</b> (basada en el sueldo) y la <b>Ley 97</b> (basada en el ahorro de la Afore), a la edad de retiro que elijas.</td><td><code>calcPension</code> en <code>pension.js</code></td></tr>
+<tr><td>Modalidad 40</td><td>Si sigues pagando al IMSS por tu cuenta, cuánto sube tu pensión de Ley 73 y cuánto pagarías, con la regla nueva (22-oct-2026) y la anterior.</td><td><code>calcM40</code> en <code>m40.js</code></td></tr>
+<tr><td>Ahorrar</td><td>Cuánto juntarías con interés compuesto y cuánto de la diferencia entre las dos leyes cubre ese ahorro.</td><td><code>calcAhorro</code> y <code>compararConLeyes</code> en <code>ahorro.js</code></td></tr>
+<tr><td>Cómo funciona</td><td>Explica los términos (UMA, semanas, pensión mínima…) usando <b>tus propios números</b>.</td><td>No calcula: lee los resultados de las otras tres.</td></tr>
+</table>
+<div class="caja n"><b>Regla de oro del proyecto</b>Todo se presenta como <i>estimación, no cantidad garantizada</i>. Es una simulación didáctica, no una asesoría ni un sitio oficial del IMSS.</div>
+<h3>Qué ley le toca a cada persona</h3>
+<p>La página decide con una sola regla: si el año en que empezaste a cotizar es <b>1996 o antes</b> (<code>ini &lt;= 1996</code>), te toca la <b>Ley 73</b>; si es 1997 o después, la <b>Ley 97</b>. (Simplificación: la ley real corta el 1 de julio de 1997, pero el simulador solo pregunta el año.) Aun así, la página muestra <b>las dos</b> leyes: la que no te toca se enseña "solo como comparación".</p>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="sec">
+<h2>2. Tecnología y carpetas</h2>
+<h3>Con qué está hecho</h3>
+<table>
+<tr><th style="width:26%">Pieza</th><th>Qué es y qué hace aquí</th></tr>
+<tr><td>React 19</td><td>Dibuja la página como componentes. Cada vez que cambia un dato, React vuelve a pintar solo lo que cambió.</td></tr>
+<tr><td>Vite 7</td><td>Es el que arma el proyecto. <code>npm run dev</code> sirve la página en vivo; <code>npm run build</code> genera la carpeta <code>dist/</code> con los archivos finales (los que se suben al servidor). <code>base: './'</code> en <code>vite.config.js</code> hace que <code>dist/</code> funcione en cualquier carpeta o dominio.</td></tr>
+<tr><td><code>motion</code></td><td>Animaciones (barras que crecen, sello de "Ley 73/97", transiciones). Se carga aparte en <code>funciones-motion.js</code> para que la página aparezca sin esperarlas. Respeta "reducir movimiento" del sistema.</td></tr>
+<tr><td><code>@fontsource</code></td><td>Las fuentes Geist y Bricolage Grotesque van dentro del proyecto (no se piden a Google), y las importa <code>main.jsx</code>.</td></tr>
+<tr><td><code>styles.css</code></td><td>Un solo archivo de estilos con variables de color (<code>--azul</code>, <code>--naranja</code>, <code>--tinta</code>, <code>--aviso</code>…). Azul = Ley 73, naranja = Ley 97, verde = ahorro.</td></tr>
+<tr><td>node:test</td><td>Las pruebas automáticas. Vienen con Node, no se instala nada extra.</td></tr>
+</table>
+<h3>Mapa de carpetas</h3>
+<table>
+<tr><th style="width:30%">Ruta</th><th>Qué contiene</th></tr>
+<tr><td><code>index.html</code></td><td>La única página real: un <code>&lt;div id="root"&gt;</code> vacío más el título y la descripción que ven Google y WhatsApp. React llena el <code>root</code>.</td></tr>
+<tr><td><code>src/main.jsx</code></td><td>Punto de entrada: importa fuentes y estilos y le dice a React que dibuje <code>&lt;App /&gt;</code> dentro de <code>root</code>.</td></tr>
+<tr><td><code>src/App.jsx</code></td><td>El "cerebro" de la pantalla: guarda los datos, llama a los cálculos y reparte los resultados.</td></tr>
+<tr><td><code>src/lib/</code></td><td>Lógica pura, sin pantalla: <code>pension.js</code>, <code>m40.js</code>, <code>ahorro.js</code>, <code>contenido.js</code>, <code>formato.js</code>, <code>escala.js</code> y dos archivos de pruebas.</td></tr>
+<tr><td><code>src/components/</code></td><td>Las pantallas y los controles (sección 7).</td></tr>
+<tr><td><code>src/assets/plastilina/</code></td><td>Las 13 ilustraciones de plastilina (hechas con IA) en dos tamaños, 320 y 640 px, formato webp, más <code>index.js</code> que las registra con su texto alternativo.</td></tr>
+<tr><td><code>public/</code></td><td>Archivos que se copian tal cual a <code>dist/</code>: aquí está <code>triptico.pdf</code>.</td></tr>
+<tr><td><code>pension_ley73_vs_ley97.html</code></td><td>La calculadora original del curso (un solo HTML). Es la <b>referencia</b> de la que se partió.</td></tr>
+<tr><td><code>_respaldo.html</code></td><td>Copia de respaldo de una versión anterior.</td></tr>
+<tr><td><code>triptico/</code>, <code>qr/</code>, <code>presentacion/</code></td><td>Material de difusión y de clase (sección 11).</td></tr>
+<tr><td><code>dist/</code>, <code>node_modules/</code></td><td>Resultado del build y librerías. Están dentro de git porque el proyecto no tiene <code>.gitignore</code>.</td></tr>
+</table>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="sec">
+<h2>3. El recorrido de un dato</h2>
+<p>Esta es la idea más importante del proyecto. Un dato nunca "viaja de pantalla a pantalla"; siempre pasa por el estado que vive en <code>App.jsx</code>.</p>
+<div class="flujo">
+  <div><b>1. La persona mueve un control</b>Por ejemplo, el salario en <code>Campo.jsx</code> (deslizador o cifra que se escribe).</div>
+  <div class="flecha">↓</div>
+  <div><b>2. <code>Campo</code> llama a <code>onChange</code></b>Que en realidad es <code>set('sbc')</code> de <code>App.jsx</code> (o <code>setM</code>, <code>setP</code>).</div>
+  <div class="flecha">↓</div>
+  <div><b>3. <code>App</code> actualiza su estado</b>Uno de cuatro: <code>caso</code>, <code>x11</code>, <code>m40</code> o <code>plan</code>.</div>
+  <div class="flecha">↓</div>
+  <div><b>4. Se recalculan los resultados</b>Con <code>useMemo</code>: <code>r</code>, <code>res40</code>, <code>h</code> y <code>k</code>, solo los que dependan del dato que cambió.</div>
+  <div class="flecha">↓</div>
+  <div><b>5. React repinta</b>Cada sección recibe por <i>props</i> lo que necesita y se actualiza (con cifras animadas en <code>Num</code>).</div>
+</div>
+<h3>Quién toma qué de quién</h3>
+<table>
+<tr><th style="width:21%">Resultado</th><th style="width:30%">Cómo se calcula (toma…)</th><th>Quién lo usa y para qué</th></tr>
+<tr><td><code>r</code> (pensión)</td><td><code>calcPension(caso, x11)</code>. Toma el <b>caso</b> (edad, salario, año de inicio, retiro, ahorro Afore, familia) y la casilla del 11 %.</td><td><b>Hero</b>: el comprobante. <b>MiPension</b>: las dos tarjetas, la gráfica por edad y los avisos. <b>Capitulos</b>: los "datos" bajo cada explicación. <b>Ahorrar</b>: compara el plan contra <code>r.a.p</code> y <code>r.b.p</code>.</td></tr>
+<tr><td><code>res40</code></td><td><code>calcM40(m40)</code>. Toma último salario, semanas cotizadas y años en Modalidad 40. <b>No usa</b> el caso.</td><td><b>Modalidad40</b>: barras, "ganas +$X", salario con el que calculó y mensaje.</td></tr>
+<tr><td><code>h</code> (ahorro)</td><td><code>calcAhorro(plan)</code>. Toma ahorro de hoy, ahorro mensual, rendimiento, años, inflación y meta.</td><td><b>Ahorrar</b>: total final, medidor, gráfica por año. <b>Capitulos</b>: el dato del interés compuesto. <code>compararConLeyes</code> también lo usa.</td></tr>
+<tr><td><code>k</code> (comparación)</td><td><code>compararConLeyes(r, h)</code>. Toma <b>la pensión</b> (<code>r</code>) y <b>el ahorro</b> (<code>h</code>).</td><td><b>Ahorrar</b>, bloque "¿Y frente a las leyes?": diferencia entre leyes, cuánto cubre tu plan y cuánto habría que ahorrar para igualar.</td></tr>
+</table>
+<div class="caja"><b>Consecuencia práctica</b>El <b>caso</b> es compartido: lo que cambias en "Mi pensión" cambia también el comprobante del inicio, los datos de "Cómo funciona" y la comparación de "Ahorrar". En cambio Modalidad 40 tiene sus propios datos (<code>m40</code>) y el plan de ahorro los suyos (<code>plan</code>); no se mezclan con el caso salvo en la comparación final.</div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="sec">
+<h2>4. El estado en <code>App.jsx</code></h2>
+<p>Son cuatro "cajitas" de datos creadas con <code>useState</code>. Estos son sus valores iniciales y quién las lee:</p>
+<table>
+<tr><th style="width:12%">Estado</th><th style="width:36%">Valor inicial</th><th style="width:21%">Quién lo cambia</th><th>Quién lo lee</th></tr>
+<tr><td><code>caso</code></td><td>edad 30, salario $20,000, empezó en 2018, retiro a los 65, ahorro Afore $0 (se estima), sin esposa(o), 0 hijos, 0 padres</td><td><b>Hero</b> (frase editable) y <b>MiPension</b>, con <code>set(campo)</code></td><td><code>calcPension</code>; Hero, MiPension</td></tr>
+<tr><td><code>x11</code></td><td><code>false</code></td><td><b>MiPension</b>, casilla en "Supuestos que usamos"</td><td><code>calcPension</code> (solo afecta a la Ley 73)</td></tr>
+<tr><td><code>m40</code></td><td>último salario $15,000, 1,000 semanas, 5 años</td><td><b>Modalidad40</b>, con <code>setM(campo)</code></td><td><code>calcM40</code></td></tr>
+<tr><td><code>plan</code></td><td>ahorrado hoy $0, $1,500 al mes, 5 % anual, 40 años, inflación 4 %, meta $3,000,000</td><td><b>Ahorrar</b>, con <code>setP(campo)</code></td><td><code>calcAhorro</code></td></tr>
+</table>
+<h3>Detalles de comportamiento</h3>
+<ul>
+<li><b><code>setC</code> protege la edad de retiro.</b> Si cambias la edad y la edad de retiro quedaría antes de la actual (o antes de 60), la sube automáticamente: <code>ret = max(ret, retiroMinimo(edad))</code>, donde <code>retiroMinimo(edad) = max(60, edad + 1)</code>.</li>
+<li><b><code>irA(id)</code></b> es la función de navegación: hace scroll suave a la sección (o brusco si el usuario pidió reducir movimiento) y cambia el <code>#</code> de la dirección. La reciben <b>Nav</b>, <b>Hero</b>, <b>Ahorrar</b> y <b>Cierre</b>.</li>
+<li><b>Enlaces viejos.</b> <code>RUTAS_VIEJAS</code> traduce <code>#/simulador</code> → <code>mi-pension</code>, <code>#/ahorra</code> → <code>ahorrar</code> y <code>#/aprende</code> → <code>como-funciona</code>. Al cargar, un <code>useEffect</code> lee el <code>#</code> y baja a esa sección.</li>
+<li><b><code>useMemo</code></b> evita recalcular: <code>r</code> solo cambia si cambian <code>caso</code> o <code>x11</code>; <code>res40</code> solo con <code>m40</code>; <code>h</code> solo con <code>plan</code>; <code>k</code> si cambian <code>r</code> o <code>h</code>.</li>
+<li><b><code>LazyMotion</code> y <code>MotionConfig</code></b> envuelven todo: cargan las funciones de animación después del primer pintado y respetan la preferencia de movimiento reducido.</li>
+</ul>
+<h3>Orden de la página (lo que <code>App</code> dibuja)</h3>
+<p><b>Nav</b> → <b>Hero</b> → <b>MiPension</b> → <b>Capitulos</b> → <b>Modalidad40</b> → <b>Ahorrar</b> → <b>Aviso</b> → <b>Cierre</b>. Además hay un enlace oculto "Saltar a la calculadora" para quien navega con teclado.</p>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="sec">
+<h2>5. La lógica: <code>src/lib</code></h2>
+<p>Estos archivos no dibujan nada. Son funciones que reciben números y devuelven números o textos.</p>
+
+<h3><code>pension.js</code>: Ley 73, Ley 97 y constantes</h3>
+<table>
+<tr><th style="width:24%">Qué exporta</th><th>Qué es / qué toma → qué entrega</th></tr>
+<tr><td><code>P</code></td><td>Constantes de 2026: UMA mensual 3,566.22; salario mínimo mensual 315.04 × 365 / 12 = 9,582.47; crecimiento de UMA y salario mínimo 3.5 % (<code>gu</code>); del sueldo 4.5 % (<code>gs</code>); rendimiento de la Afore 7 % (<code>r</code>).</td></tr>
+<tr><td><code>TOPE</code></td><td>25 × UMA = $89,155.50. Máximo salario que el IMSS registra.</td></tr>
+<tr><td><code>RANGO_SBC</code></td><td>El rango de los controles de salario: mínimo = salario mínimo, máximo = <code>TOPE</code>, paso $1,000, y los textos de aviso. Lo usan Hero, MiPension y Modalidad40 para que <b>la cifra del control sea la que se calcula</b>.</td></tr>
+<tr><td><code>MINIMA_73</code></td><td>Pensión mínima de la Ley 73 = salario mínimo × 1.11 = $10,636.54 en 2026.</td></tr>
+<tr><td><code>EDADES_RETIRO</code></td><td>60 a 75. Son las columnas de la gráfica por edad.</td></tr>
+<tr><td><code>T</code></td><td>La tabla del art. 167 de la ley de 1973: 22 filas [hasta cuántas veces el salario mínimo, % de cuantía básica, % de incremento anual].</td></tr>
+<tr><td><code>aniosIncremento(sem)</code></td><td>Toma semanas cotizadas → entrega los "años de incremento" con la regla del escalón (sección 6).</td></tr>
+<tr><td><code>cuotaPatronalCyV(k, sbc, uma, sm)</code></td><td>Toma año (0 = 2026), salario, UMA y salario mínimo de ese año → entrega el % que paga el patrón de cesantía y vejez, según tramo.</td></tr>
+<tr><td><code>aportacionAfore(...)</code></td><td>2 % retiro + cuota patronal + 1.125 % obrera. La usa <code>ley97</code>.</td></tr>
+<tr><td><code>anual(edad)</code></td><td>Factor de anualidad: entre cuántos "meses" se reparte tu ahorro. La usan <code>ley97</code> y <code>ahorro.js</code>.</td></tr>
+<tr><td><code>asig(d)</code></td><td>Toma la familia → entrega el % extra por asignaciones familiares (art. 164).</td></tr>
+<tr><td><code>datos(form)</code></td><td>Limpia lo que escribió la persona: salario entre mínimo y tope; años cotizados <code>= max(0, min(2026 − ini, edad − 15))</code>. Guarda lo escrito en <code>raw</code> para poder avisar si se corrigió.</td></tr>
+<tr><td><code>ley73(d, ret, x11)</code></td><td>Entrega <code>{ p, ult, ap }</code>: pensión mensual, último sueldo proyectado y si es aproximada por tener menos de 500 semanas.</td></tr>
+<tr><td><code>ley97(d, ret)</code></td><td>Entrega <code>{ p, saldo, g, ult, sem }</code>: pensión, ahorro final, pensión garantizada, último sueldo y semanas.</td></tr>
+<tr><td><code>retiroMinimo(edad)</code></td><td>La edad de retiro más baja permitida.</td></tr>
+<tr><td><code>calcPension(form, x11)</code></td><td>Junta todo: llama a <code>datos</code>, <code>ley73</code> y <code>ley97</code>, arma mensajes, avisos y las filas para la gráfica por edad.</td></tr>
+</table>
+<p><b>Quién usa <code>pension.js</code>:</b> <code>App</code> (<code>calcPension</code>, <code>retiroMinimo</code>), <code>m40.js</code> (<code>P, T, TOPE, MINIMA_73, aniosIncremento, cuotaPatronalCyV</code>), <code>ahorro.js</code> (<code>anual</code>), <code>Capitulos</code> (<code>P, TOPE, MINIMA_73, asig</code>), <code>contenido.js</code> (<code>P, TOPE</code>), y los controles de salario (<code>RANGO_SBC</code>).</p>
+
+<h3><code>m40.js</code>: Modalidad 40</h3>
+<table>
+<tr><th style="width:24%">Qué exporta</th><th>Qué es</th></tr>
+<tr><td><code>CUOTA_FIJA_M40</code></td><td>6.925 %: invalidez y vida (1.75 + 0.625), gastos médicos de pensionados (1.05 + 0.375), retiro (2) y cesantía y vejez obrera (1.125).</td></tr>
+<tr><td><code>cuotaM40(k, sbc)</code></td><td>Cuota total del año <code>k</code> = 6.925 % + cuota patronal de cesantía y vejez (la paga la persona). En 2026 desde 4.01 UMA: 6.925 + 7.513 = <b>14.438 %</b>; en 2030, <b>18.800 %</b>.</td></tr>
+<tr><td><code>pen40(prom, sem)</code></td><td>Pensión a los 65 con la fórmula de la Ley 73, sin asignaciones, nunca menor a <code>MINIMA_73</code>.</td></tr>
+<tr><td><code>calcM40({ ur, sem, m })</code></td><td>Toma último salario, semanas y años en M40 → entrega tres escenarios, el salario con el que calculó (<code>u</code>), la ganancia y un mensaje.</td></tr>
+</table>
+<p><b>Quién lo usa:</b> solo <code>App</code> (para armar <code>res40</code>) y, a través de él, el componente <code>Modalidad40</code>.</p>
+
+<h3><code>ahorro.js</code>: interés compuesto y comparación</h3>
+<table>
+<tr><th style="width:24%">Qué exporta</th><th>Qué es</th></tr>
+<tr><td><code>fv(p, m, i, n)</code></td><td>Valor futuro: lo ahorrado hoy (<code>p</code>) más aportaciones mensuales (<code>m</code>) a tasa mensual <code>i</code> durante <code>n</code> meses.</td></tr>
+<tr><td><code>tasaMensual(rt)</code></td><td>Convierte el rendimiento anual en % a tasa mensual equivalente: <code>(1 + rt/100)^(1/12) − 1</code>.</td></tr>
+<tr><td><code>calcAhorro(plan)</code></td><td>Entrega total final <code>F</code>, lo que pusiste <code>put</code>, valor en pesos de hoy <code>real</code>, ahorro mensual necesario para la meta <code>need</code>, qué pasa si esperas 10 años <code>w</code>, y el detalle año por año <code>porAnio</code>.</td></tr>
+<tr><td><code>compararConLeyes(r, h)</code></td><td>Toma la pensión (<code>r</code>) y el ahorro (<code>h</code>) → entrega la diferencia entre leyes <code>gap</code>, cuánto aporta el plan <code>mine</code>, cuánto cubre <code>cubre</code>, cuánto habría que ahorrar <code>paraIgualar</code> y cuatro barras para la comparación.</td></tr>
+</table>
+
+<h3><code>contenido.js</code>: todos los textos</h3>
+<p>Así los componentes no llevan texto escrito a mano y el contenido se revisa en un solo lugar.</p>
+<table>
+<tr><th style="width:24%">Exporta</th><th>Quién lo consume</th></tr>
+<tr><td><code>LEY_EN_UNA_FRASE</code>, <code>GLOSARIO</code></td><td><b>Capitulos</b> (definiciones de las tarjetas)</td></tr>
+<tr><td><code>AYUDA</code></td><td>La letra pequeña bajo cada pregunta: <b>Hero</b>, <b>MiPension</b>, <b>Modalidad40</b>, <b>Ahorrar</b></td></tr>
+<tr><td><code>SUPUESTOS</code></td><td><b>MiPension</b>, desplegable "Supuestos que usamos"</td></tr>
+<tr><td><code>M40_TEXTOS</code></td><td><b>Modalidad40</b>: intro, "Antes", "Ahora", aviso para quien ya estaba inscrito, y "Cómo calculamos esto"</td></tr>
+<tr><td><code>AVISO_INTRO</code>, <code>AVISO</code>, <code>FUENTES</code></td><td><b>Aviso</b>: por qué otra calculadora da otro número, y la lista de fuentes con enlaces oficiales</td></tr>
+</table>
+
+<h3>Los archivos chicos</h3>
+<table>
+<tr><th style="width:24%">Archivo</th><th>Qué hace</th></tr>
+<tr><td><code>formato.js</code></td><td><code>money</code> (pesos sin centavos con comas), <code>anios</code> ("1 año"/"2 años"), <code>entero</code>, <code>moneyCorto</code> ($1.2 M, $850 mil). Solo presentación.</td></tr>
+<tr><td><code>escala.js</code></td><td>Calcula los ejes "redondos" de las gráficas (1, 2, 2.5 o 5 × 10ⁿ). No interviene en ningún cálculo.</td></tr>
+<tr><td><code>ley.test.js</code> y <code>paridad.test.js</code></td><td>Pruebas (sección 10).</td></tr>
+</table>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="sec">
+<h2>6. Las fórmulas con ejemplos</h2>
+<p>Valores usados en 2026: UMA mensual $3,566.22 · salario mínimo mensual $9,582.47 · tope $89,155.50. Los resultados están en pesos del año en que la persona se retira.</p>
+
+<h3>6.1 Paso previo: limpiar los datos (<code>datos</code>)</h3>
+<ul>
+<li>El salario se "encaja" entre el salario mínimo y 25 UMA (<code>max(sbc, SM)</code> y luego <code>min(…, tope)</code>).</li>
+<li>Años cotizados hoy = <code>2026 − año de inicio</code>, pero nunca más que <code>edad − 15</code> (nadie cotiza antes de los 15) ni menos de 0. Si se corrige, sale un aviso.</li>
+<li>Semanas cotizadas al retirarse = <code>(años cotizados hoy + años que faltan) × 52</code>. Se supone cotización continua.</li>
+</ul>
+
+<h3>6.2 Salario proyectado</h3>
+<p>El salario del año <code>k</code> a futuro es <code>salario × 1.045<sup>k</sup></code>, sin pasar de <code>25 UMA × 1.035<sup>k</sup></code>. El salario mínimo y la UMA crecen 3.5 % al año; el sueldo, 4.5 %.</p>
+
+<h3>6.3 Ley 73 (<code>ley73</code>)</h3>
+<div class="pasos">
+<div class="paso"><b>Promedio de los últimos 5 años</b> (unas 250 semanas): suma los salarios proyectados de los 5 años anteriores al retiro y divide entre 5. (Si faltan menos de 5 años, usa los que hay.) Art. 167.</div>
+<div class="paso"><b>Ubicar el grupo en la tabla</b>: divide el promedio entre el salario mínimo <i>del año de retiro</i> (9,582.47 × 1.035<sup>n</sup>) y busca la primera fila de <code>T</code> cuyo límite alcance. Esa fila da el % de <b>cuantía básica</b> y el % de <b>incremento anual</b>.</div>
+<div class="paso"><b>Años de incremento</b> (<code>aniosIncremento</code>): se cuentan las semanas que pasan de 500. Por cada 52 hay un año completo; lo que sobra vale <b>0</b> si son menos de 13 semanas, <b>medio año</b> si son de 13 a 26, y <b>año completo</b> si pasan de 26. Si tiene menos de 500 semanas, el cálculo se hace como si tuviera 500 y se marca como aproximado.</div>
+<div class="paso"><b>Pensión base</b> = promedio × (cuantía básica + incremento × años de incremento) × factor por edad. El factor es <code>1 − 5 % × (65 − edad de retiro)</code>: 75 % a los 60, 80 % a los 61… 100 % a los 65 o más (art. 171).</div>
+<div class="paso"><b>Asignaciones familiares</b> (art. 164, función <code>asig</code>): esposa(o) 15 %; cada hijo 10 %. Si no hay esposa(o) ni hijos, cada padre 10 % (y 10 % más si es solo uno). Si no hay nadie, ayuda asistencial de 15 %. Se multiplica la base por <code>(1 + asignaciones)</code>.</div>
+<div class="paso"><b>Tope del art. 169</b>: con asignaciones no puede pasar del promedio salarial, salvo que los incrementos por semanas ya lo superen por sí solos. El tope es <code>max(promedio, pensión base)</code>.</div>
+<div class="paso"><b>Casilla del 11 %</b> (<code>x11</code>): si está activa, se multiplica por 1.11 la pensión calculada (criterio del material del curso).</div>
+<div class="paso"><b>Piso del art. 168</b>: el resultado nunca baja de <code>salario mínimo del año de retiro × 1.11</code>. El 1.11 es del decreto del DOF del 5-ene-2004. Como el piso ya lo trae, la casilla no lo multiplica otra vez.</div>
+</div>
+<div class="caja v"><b>Ejemplo real: 50 años, salario $25,000, empezó en 1995, se retira a los 65, sin familia</b>
+Años cotizados hoy 31 → semanas al retiro (31 + 15) × 52 = <b>2,392</b>. Salarios de los últimos 5 años: $38,824 · $40,571 · $42,397 · $44,305 · $46,299 → <b>promedio $42,479</b>. Salario mínimo del año de retiro: 9,582.47 × 1.035<sup>15</sup> = $16,054, así que el promedio es 2.65 veces → fila "hasta 2.75": cuantía 30.48 %, incremento 1.958 %. Semanas sobrantes 1,892 = 36 años + 20 semanas → <b>36.5 años</b>. Porcentaje = 30.48 + 1.958 × 36.5 = <b>101.95 %</b> → base $43,306. Con ayuda asistencial de 15 % saldría $49,802, pero el tope del art. 169 se eleva a la base (porque los incrementos ya pasan el 100 %), así que <b>pensión final $43,306 al mes</b>. Si se retirara a los 60, el factor sería 75 % y tendría menos semanas: $27,095.</div>
+
+<h3>6.4 Ley 97 (<code>ley97</code>)</h3>
+<div class="pasos">
+<div class="paso"><b>Ahorro de partida</b>: lo que la persona escribió en "¿Cuánto tienes en tu Afore?". Si lo deja en $0, se estima: <code>salario × 12 × 6.5 % × años cotizados × 1.07<sup>años/2</sup></code>.</div>
+<div class="paso"><b>Cada año hasta el retiro</b> se suma la aportación: <code>(2 % retiro + cuota patronal de cesantía y vejez según tu tramo + 1.125 % tuya) × 12 × salario</code>. La cuota patronal va de 3.150 % a 7.513 % en 2026 y sube cada año hasta 2030 (tabla del art. 168 y su transitorio de 2020; después de 2030 se queda igual).</div>
+<div class="paso"><b>Rendimiento</b>: el saldo gana 7 % al año; lo aportado en el año gana media vuelta. La cuenta cada año: <code>s = s + a + a × 7 %/2 + s × 7 %</code>.</div>
+<div class="paso"><b>Pensión = saldo ÷ factor de anualidad</b> (<code>anual(edad)</code>). Los factores del curso son exactos a los 61 (248.7147), 62 (244.6939) y 64 (236.3211); en otras edades se interpola o extrapola con los dos más cercanos (a los 65 sale 232.13).</div>
+<div class="paso"><b>Pensión garantizada</b> (art. 170, aproximada): <code>(3,540.56 + 7,587.45 × (a + b + c) / 3) × 1.035<sup>n</sup></code>, donde <code>a</code> = qué tan cerca estás de 65 años (0 a 1), <code>b</code> = semanas entre 875 y 1,125 (0 a 1) y <code>c</code> = salario entre 1.99 y 5 UMA (0 a 1). Va de $3,540.56 a $11,128.01 en 2026. Si el cálculo normal sale menor, se paga esta.</div>
+</div>
+<div class="caja v"><b>Ejemplo real (los valores iniciales de la página): 30 años, $20,000, empezó en 2018, retiro a los 65</b>
+Años cotizados hoy 8; faltan 35; semanas al retiro 2,236 (la Ley 97 pide 1,000 ese año). Ahorro final estimado: <b>$10,438,646</b> en pesos de 2061. Factor a los 65: 232.13 → <b>$10,438,646 ÷ 232.13 = $44,968 al mes</b> (50 % del último sueldo). La garantizada sería $37,096, menor, así que no se usa. La Ley 73, solo como comparación, daría $81,958 (por eso la página avisa que para aplicarla hacen falta unos 29 años cotizados hoy).</div>
+
+<h3>6.5 Modalidad 40 (<code>calcM40</code>)</h3>
+<div class="pasos">
+<div class="paso"><b>Salario efectivo</b> <code>u</code> = el escrito, entre salario mínimo y 25 UMA. Es el que se muestra bajo el título de resultados.</div>
+<div class="paso"><b>Tres escenarios</b>: <i>Sin Modalidad 40</i> (promedio = <code>u</code>, semanas actuales). <i>Regla nueva</i> (acuerdo del Consejo Técnico del IMSS, DOF 21-oct-2026): te registras con <code>u + 1 UMA</code> como máximo, nunca menos del salario mínimo ni más de 25 UMA, sin fechas pasadas. <i>Regla anterior</i>: hasta 25 UMA.</div>
+<div class="paso"><b>Promedio de las últimas 250 semanas</b>: si pagas <code>m</code> años, <code>w = min(52 × m, 250)</code> semanas se cuentan con el salario de M40 y las <code>250 − w</code> restantes con <code>u</code>: <code>promedio = (w × salarioM40 + (250 − w) × u) / 250</code>.</div>
+<div class="paso"><b>Pensión</b> (<code>pen40</code>) con la tabla de la Ley 73 y semanas = semanas actuales + 52 × m; mismo cálculo de años de incremento; nunca menos de la pensión mínima. Es a los 65, en pesos de hoy y sin asignaciones.</div>
+<div class="paso"><b>Costo</b>: la cuota de cada año (<code>cuotaM40</code>) por 12 meses por el salario de M40, sumando año por año porque la cuota sube cada enero (14.438 % en 2026 hasta 18.800 % en 2030). El primer año se muestra como cuota mensual.</div>
+</div>
+<div class="caja v"><b>Ejemplo real: último salario $20,000, 910 semanas, 5 años en M40</b>
+Semanas finales 910 + 260 = 1,170. Sin M40: <b>$10,637</b> (el cálculo da menos que el piso, así que paga la mínima). Regla nueva: salario de M40 $23,566 (20,000 + UMA 3,566) → pensión <b>$13,660</b>; cuota <b>$3,402 al mes</b> el primer año y <b>$234,985</b> en total en 5 años. Regla anterior: salario $89,156 → pensión <b>$39,986</b>; cuota $12,872 al mes y $888,994 en total. La página dice "estimamos que subirías +$3,023 al mes" con la regla nueva.</div>
+
+<h3>6.6 Ahorro (<code>calcAhorro</code>)</h3>
+<ul>
+<li>Tasa mensual equivalente: <code>i = (1 + rt/100)^(1/12) − 1</code>. Meses: <code>N = años × 12</code>.</li>
+<li>Total final: <code>F = hoy × (1 + i)<sup>N</sup> + mensual × ((1 + i)<sup>N</sup> − 1) / i</code>. Lo que pusiste: <code>hoy + mensual × N</code>. Intereses: <code>F − pusiste</code>.</li>
+<li>En pesos de hoy: <code>F / (1 + inflación)<sup>años</sup></code>.</li>
+<li>Ahorro mensual necesario para la meta: despeja el mensual de la fórmula anterior.</li>
+<li>"Si esperas 10 años": el mismo cálculo con 10 años menos. La diferencia es lo que pierdes.</li>
+</ul>
+<div class="caja v"><b>Ejemplo real (valores iniciales): $1,500 al mes, 5 % anual, 40 años, inflación 4 %, meta $3,000,000</b>
+Total final <b>$2,223,787</b>; tú pusiste $720,000 y <b>68 %</b> son intereses; en pesos de hoy equivale a $463,190. Para llegar a $3,000,000 habría que ahorrar <b>$2,024 al mes</b>. Si esperas 10 años juntarías $1,223,064: pierdes $1,000,723.</div>
+
+<h3>6.7 Comparar el plan contra las leyes (<code>compararConLeyes</code>)</h3>
+<ul>
+<li>Usa el <b>retiro y los años que faltan</b> de "Mi pensión" (no los años del plan) y el <b>ahorro de hoy, el mensual y el rendimiento</b> de "Ahorrar".</li>
+<li><code>mine</code> = lo que juntaría el plan al retiro ÷ factor de anualidad = pensión mensual que daría ese ahorro.</li>
+<li><code>gap</code> = pensión Ley 73 − pensión Ley 97. Si es positivo, "te faltan $gap al mes"; <code>cubre</code> = lo menor entre <code>mine</code> y <code>gap</code>.</li>
+<li><code>paraIgualar</code> = el ahorro mensual que habría que hacer desde hoy para que el plan pague justo el <code>gap</code>.</li>
+<li>Las cuatro barras: Ley 73, Ley 97, tu plan, y Ley 97 + tu plan.</li>
+</ul>
+
+<h3>6.8 Mensajes y avisos (<code>calcPension</code>)</h3>
+<table>
+<tr><th style="width:42%">Aviso</th><th>Cuándo sale</th></tr>
+<tr><td>No llegas a las semanas mínimas de la Ley 97</td><td>Semanas al retiro &lt; <code>min(1000, 875 + 25 × años que faltan)</code></td></tr>
+<tr><td>Calculamos con 1 salario mínimo / solo toma hasta 25 UMA</td><td>El salario escrito cae fuera de [mínimo, tope]</td></tr>
+<tr><td>Ajustamos tus años cotizados</td><td><code>2026 − ini &gt; edad − 15</code></td></tr>
+<tr><td>Tu ahorro no alcanza: pensión garantizada</td><td>La pensión de Ley 97 ≤ la garantizada</td></tr>
+<tr><td>Para la Ley 73 se necesitan unos 29 años cotizados</td><td>Empezó después de 1997 y lleva menos de 29 años</td></tr>
+<tr><td>La Ley 73 no da pensión con menos de 500 semanas</td><td>Semanas al retiro &lt; 500 (el monto es ilustrativo)</td></tr>
+</table>
+</section>
+
+<!-- ============ 7 ============ -->
+<section class="sec">
+<h2>7. Las pantallas: <code>src/components</code></h2>
+<p>Para cada componente: qué <b>recibe</b> (de <code>App</code> o de otro componente), qué <b>muestra</b> y qué <b>cambia</b>.</p>
+
+<h3>Secciones principales</h3>
+<table>
+<tr><th style="width:15%">Componente</th><th style="width:27%">Recibe (props)</th><th>Qué muestra y qué hace</th></tr>
+<tr><td><b>Nav</b></td><td><code>irA</code></td><td>Barra superior fija con el logo, los 4 enlaces (Mi pensión, Cómo funciona, Modalidad 40, Ahorrar), el botón "Calcular" y el menú móvil. Un <code>IntersectionObserver</code> marca la sección que está a mitad de pantalla; la barra se "eleva" al hacer scroll. Exporta <code>Logo</code> y <code>SECCIONES</code>, que también usa <b>Cierre</b>.</td></tr>
+<tr><td><b>Hero</b></td><td><code>caso, set, r, irA</code></td><td>Título, la frase editable "Tengo [edad] años, gano [salario] al mes y empecé en [año]", y el <b>comprobante</b>: pensión estimada, sello "Ley 73"/"Ley 97" animado, tasa de reemplazo (% del último sueldo), las dos leyes y el botón "Afinar mi cálculo" (lleva a Mi pensión). Tocar una cifra abre un editor con <b>Campo</b>; Escape lo cierra. <b>Lee</b> <code>r</code>; <b>cambia</b> <code>caso</code>.</td></tr>
+<tr><td><b>MiPension</b></td><td><code>caso, set, x11, setX11, r</code></td><td>El formulario completo (Tú / Tu retiro / Tu familia), las dos tarjetas de resultado (la que te toca lleva "Tu ley"), el mensaje, los avisos, la gráfica "¿Y si me retiro a otra edad?" con su tabla, y el desplegable de supuestos con la casilla del 11 %. En móvil, una barra fija resume los resultados mientras el formulario tapa las tarjetas. <b>Cambia</b> <code>caso</code> y <code>x11</code>.</td></tr>
+<tr><td><b>Capitulos</b></td><td><code>r, h</code></td><td>9 tarjetas que explican: fecha y ley, Ley 73, Ley 97, semanas, UMA y salario, pensión mínima y garantizada, familia e interés compuesto. Cada una mezcla un texto fijo (de <code>contenido.js</code>) con un <b>dato tuyo</b> sacado de <code>r</code> o <code>h</code>. Una ilustración grande cambia según la tarjeta que cruza la mitad de la pantalla. <b>No cambia nada</b>, solo lee.</td></tr>
+<tr><td><b>Modalidad40</b></td><td><code>m40, set, res</code></td><td>Introducción, comparación "Antes / Ahora" (regla del 22-oct-2026), los tres controles (último salario registrado, semanas, años), la cifra "estimamos que subirías +$X", las tres barras (sin M40 / regla nueva / regla anterior) con la cuota y el costo total, el mensaje, el aviso para quien ya estaba inscrito y "Cómo calculamos esto". <b>Cambia</b> <code>m40</code>; <b>lee</b> <code>res</code>.</td></tr>
+<tr><td><b>Ahorrar</b></td><td><code>plan, set, h, k, r, irA</code></td><td>Seis controles del plan, el total final con medidor tuyo/intereses, los mensajes (pesos de hoy, ahorro para la meta, esperar 10 años), la gráfica año por año con su tabla, y el bloque "¿Y frente a las leyes?" con barras y el mensaje de cuánto cubre tu plan. <b>Cambia</b> <code>plan</code>; <b>lee</b> <code>h</code>, <code>k</code> y <code>r</code>.</td></tr>
+<tr><td><b>Aviso</b></td><td>nada</td><td>"¿Por qué otra calculadora te da otro número?" (pesos, rendimiento, sueldo, constancia, anualidad, subcuentas, aportaciones…) y la lista de <b>Fuentes</b>, con enlaces a los documentos oficiales (SIDOF, IMSS, DOF, Cámara de Diputados, INEGI).</td></tr>
+<tr><td><b>Cierre</b></td><td><code>irA</code></td><td>Mensaje final, botón "Volver a mi cálculo", pie con enlaces, equipo y aviso legal ("no es asesoría ni sitio oficial del IMSS; las ilustraciones se generaron con IA").</td></tr>
+</table>
+
+<h3>Piezas reutilizables</h3>
+<table>
+<tr><th style="width:18%">Componente</th><th>Qué hace</th></tr>
+<tr><td><b>Campo</b></td><td>La pregunta con deslizador y cifra editable. Recibe <code>value, onChange, min, max, step, curva, format</code>. <b>Escala curva</b>: para que $20,000 no quede pegado al inicio, el deslizador reparte más recorrido a los valores bajos. Si el mínimo no es múltiplo del paso (el salario mínimo $9,582), el deslizador redondea al paso (…$10,000, $11,000…) pero sus extremos son exactos. <b>Si escribes algo fuera de rango</b>, lo corrige y muestra un recuadro: "Escribiste $5,000, pero el IMSS no registra un salario menor al mínimo. Calculamos con $9,582". También exporta <b>Contador</b> (hijos, padres) e <b>Interruptor</b> (esposa/pareja).</td></tr>
+<tr><td><b>Barras</b></td><td>Barras horizontales animadas. Cada fila trae nombre, valor, partes de color (azul Ley 73, naranja Ley 97, verde ahorro, gris sin M40) y una línea extra opcional. La más larga ocupa el 100 %.</td></tr>
+<tr><td><b>GraficaEdades</b></td><td>Gráfica SVG: dos columnas por edad de retiro (60 a 75). Resalta la edad elegida; al tocar una columna la elige (cambia <code>caso.ret</code>). Usa <code>escala</code> y <code>useAncho</code> para dibujarse a su tamaño real.</td></tr>
+<tr><td><b>GraficaAhorro</b></td><td>Gráfica SVG año por año: lo que pusiste vs. intereses, con información al pasar el cursor o enfocar con teclado.</td></tr>
+<tr><td><b>Num</b></td><td>Cifra que cuenta suavemente hasta su nuevo valor (se salta la animación si el usuario pidió reducir movimiento; en el comprobante espera a verse en pantalla).</td></tr>
+<tr><td><b>ui.jsx</b></td><td>Utilidades: <code>useVisible</code> (¿se ve este elemento?), <code>useAncho</code> (ancho real de un contenedor), <code>Plastilina</code> (ilustración con dos tamaños), <code>Nota</code> (aviso con icono), <code>Titulo</code> (título + línea explicativa) y <code>VerTabla</code> (desplegable con la tabla de cada gráfica, para leer los valores sin cursor).</td></tr>
+<tr><td><b>Icon</b></td><td>Los iconos SVG (flecha, alerta, check, calendario, menú…).</td></tr>
+</table>
+<div class="caja"><b>Accesibilidad que ya está resuelta</b>Cada gráfica tiene su tabla; los resultados se anuncian (<code>aria-live</code>); hay enlace "Saltar a la calculadora"; todo funciona con teclado; las animaciones se apagan si el sistema pide menos movimiento.</div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="sec">
+<h2>8. De dónde sale cada número</h2>
+<p>Cada constante pertenece a una de cuatro categorías. Esto es lo que hay que decir si alguien pregunta "¿de dónde sacaron esto?".</p>
+<table>
+<tr><th style="width:26%">Número</th><th style="width:15%">Valor</th><th style="width:16%">Tipo</th><th>Fuente</th></tr>
+<tr><td>Tabla de cuantía e incrementos</td><td>22 filas, 80 % a 13 %</td><td>Ley</td><td>Art. 167 de la Ley del Seguro Social de 1973 (PDF del IMSS)</td></tr>
+<tr><td>Promedio de 250 semanas</td><td>≈ 5 años</td><td>Ley</td><td>Art. 167, mismo texto</td></tr>
+<tr><td>Incremento por fracciones de año</td><td>0 / 50 % / 100 %</td><td>Ley</td><td>Art. 167: de 13 a 26 semanas, 50 %; más de 26, 100 %</td></tr>
+<tr><td>Asignaciones familiares</td><td>15 %, 10 %, 15 %…</td><td>Ley</td><td>Art. 164 (1973)</td></tr>
+<tr><td>Tope del 100 % del promedio</td><td>100 %</td><td>Ley</td><td>Art. 169 (1973)</td></tr>
+<tr><td>Pensión mínima</td><td>1 SM</td><td>Ley</td><td>Art. 168 (1973)</td></tr>
+<tr><td>Factor 1.11</td><td>×1.11</td><td>Decreto</td><td>DOF del 5-ene-2004, art. décimo cuarto transitorio. <i>Pendiente confirmar con el IMSS si aplica a todas las pensiones o solo al piso.</i></td></tr>
+<tr><td>Retiro anticipado</td><td>75 % a 95 %</td><td>Ley</td><td>Art. 171 (1973)</td></tr>
+<tr><td>Salario mínimo 2026</td><td>$315.04 diarios; mensual × 365/12 = $9,582.47</td><td>Dato oficial</td><td>Resolución de la CONASAMI, DOF</td></tr>
+<tr><td>UMA 2026</td><td>$117.31 diarios; mensual $3,566.22</td><td>Dato oficial</td><td>INEGI, DOF del 9-ene-2026</td></tr>
+<tr><td>Tope de cotización</td><td>25 UMA = $89,155.50</td><td>Ley</td><td>Ley del Seguro Social</td></tr>
+<tr><td>Aportaciones a la Afore</td><td>2 % + 3.150–7.513 % + 1.125 % (2026)</td><td>Ley</td><td>Art. 168 y segundo transitorio, reforma del DOF del 16-dic-2020</td></tr>
+<tr><td>Cuota de Modalidad 40</td><td>14.438 % (2026) a 18.800 % (2030)</td><td>Ley</td><td>Art. 218 + tabla del transitorio de 2020 (fuente de apoyo: semanas-cotizadas.com.mx, Infobae)</td></tr>
+<tr><td>Regla nueva de M40</td><td>último SBC o + 1 UMA</td><td>Acuerdo oficial</td><td>ACDO.AS2.HCT.101026/302.P.DG, Consejo Técnico del IMSS (SIDOF y DOF, 21-oct-2026)</td></tr>
+<tr><td>Semanas mínimas Ley 97</td><td>875 en 2026, +25 por año, 1,000 en 2031</td><td>Ley</td><td>Reforma de 2020, cuarto transitorio</td></tr>
+<tr><td>Rango de la pensión garantizada</td><td>$3,540.56 a $11,128.01</td><td>Dato de apoyo</td><td>Art. 170 actualizado; fuentes de apoyo (AMCP, Grupo Pensar). La interpolación entre ambos extremos es <b>nuestra aproximación</b>.</td></tr>
+<tr><td>Factores de anualidad</td><td>248.7147 / 244.6939 / 236.3211</td><td>Del curso</td><td>Material del curso; exactos solo a 61, 62 y 64 años</td></tr>
+<tr><td>Crecimiento del sueldo</td><td>4.5 % anual</td><td>Supuesto</td><td>Material del curso</td></tr>
+<tr><td>Crecimiento de UMA y salario mínimo</td><td>3.5 % anual</td><td>Supuesto</td><td>Material del curso</td></tr>
+<tr><td>Rendimiento de la Afore</td><td>7 % anual, sin comisión</td><td>Supuesto</td><td>Material del curso (CONSAR usa 4 % real y comisión)</td></tr>
+<tr><td>Ahorro de partida estimado</td><td>6.5 % del sueldo por año</td><td>Supuesto</td><td>Material del curso</td></tr>
+<tr><td>52 semanas por año, 100 % de constancia</td><td>—</td><td>Supuesto</td><td>Simplificación; se dice en "Supuestos que usamos"</td></tr>
+</table>
+<div class="caja n"><b>Importante</b>Los números de tipo "Supuesto" y "Del curso" no son ley. Por eso otras calculadoras (CONSAR, Afores) dan resultados distintos, y por eso la página lo explica en la sección "¿Por qué otra calculadora te da otro número?".</div>
+</section>
+
+<!-- ============ 9 ============ -->
+<section class="sec">
+<h2>9. Textos, estilos y animación</h2>
+<h3>Cómo se escribe un texto</h3>
+<p>Los textos no se escriben dentro de los componentes: viven en <code>contenido.js</code>. Algunos se arman con valores del cálculo (por ejemplo la ayuda del salario trae el mínimo y el tope con <code>money(P.sm)</code> y <code>money(TOPE)</code>), así que si cambia una constante, el texto se corrige solo.</p>
+<h3>Los estilos</h3>
+<ul>
+<li>Un único <code>styles.css</code>. Paleta: azul (<code>--azul</code>) para la Ley 73, naranja (<code>--naranja</code>) para la Ley 97, verde para el ahorro, ámbar (<code>--aviso</code>, <code>--aviso-suave</code>) para avisos, tinta oscura para texto.</li>
+<li>Las ilustraciones de plastilina comparten el mismo fondo celeste (<code>#d6e8fc</code>) que sus recuadros, para que se fundan con la página; el cierre usa azul noche (<code>#060d23</code>).</li>
+<li>Diseño adaptable: los componentes miden su ancho real (<code>useAncho</code>) para que las gráficas se lean bien en móvil.</li>
+</ul>
+<h3>La animación</h3>
+<ul>
+<li>Barras y sello: <code>motion</code> con resortes. Cifras: <code>Num</code> las cuenta con <code>requestAnimationFrame</code>.</li>
+<li>La página aparece sin esperar la librería de animación, porque <code>funciones-motion.js</code> se descarga después.</li>
+<li>Si el sistema pide "reducir movimiento", las animaciones se saltan o se hacen de golpe.</li>
+</ul>
+</section>
+
+<!-- ============ 10 ============ -->
+<section class="sec">
+<h2>10. Pruebas</h2>
+<p>Se corren con <code>npm test</code>. Actualmente son <b>14 pruebas</b> y todas pasan.</p>
+<table>
+<tr><th style="width:26%">Archivo</th><th>Qué prueba</th></tr>
+<tr><td><code>ley.test.js</code> (13 pruebas)</td><td>Compara contra <b>la ley</b>, y cada prueba cita su artículo: la tabla del art. 167 (22 grupos), el escalón de semanas (500 → 0; 513 → 0.5; 527 → 1; 579 → 2), las asignaciones del art. 164, el piso del art. 168 (y que no se multiplica dos veces con la casilla del 11 %), el tope del art. 169 (los dos casos), la cuota patronal por tramo y año, la aportación a la Afore (10.638 % en 2026, 15 % en 2030), la cuota de Modalidad 40 (14.438 % y 18.8 %, con el total de 5 años), la regla del acuerdo del DOF (último salario + 1 UMA, mínimo, tope), que la pensión de M40 nunca baje del piso y que la casilla del 11 % no toque la Ley 97.</td></tr>
+<tr><td><code>paridad.test.js</code> (1 prueba)</td><td>Ejecuta el script del HTML original del curso con un DOM falso y compara 250 casos de "Ahorrar" contra <code>calcAhorro</code>. Es la única parte que sigue igual a la referencia.</td></tr>
+</table>
+<div class="caja n"><b>Por qué cambió esto</b>Antes todo se comparaba contra el HTML del curso. Eso garantizaba que la versión nueva diera lo mismo que la vieja, pero no que fuera correcta. Tras la auditoría, las fórmulas de Ley 73, Ley 97 y Modalidad 40 se corrigieron contra la ley, así que ya no coinciden a propósito con el HTML y se prueban contra los artículos.</div>
+<h3>Qué se corrigió en la auditoría</h3>
+<table>
+<tr><th style="width:34%">Antes</th><th>Ahora</th></tr>
+<tr><td>El 11 % se multiplicaba otra vez sobre el piso (1.23 salarios mínimos) y también a la Ley 97</td><td>El piso ya lo trae y solo se aplica una vez; la Ley 97 no lo usa</td></tr>
+<tr><td>Incremento por semanas en forma lineal</td><td>Escalón de 13 y 26 semanas del art. 167</td></tr>
+<tr><td>Tope siempre en 100 % del promedio</td><td>Se eleva si los incrementos por semanas ya lo superan (art. 169)</td></tr>
+<tr><td>Aportación Afore fija de 10.64 % (tramo más alto)</td><td>Tabla por tramo y año del art. 168</td></tr>
+<tr><td>Cuota M40 de 14.438 % fija</td><td>Cuota por año (hasta 18.8 % en 2030) y por tramo</td></tr>
+<tr><td>Se podía escribir $5,000 y se calculaba con $9,582 en silencio</td><td>El control empieza en el salario mínimo; si se escribe menos, se avisa; y se muestra el salario efectivo</td></tr>
+</table>
+</section>
+
+<!-- ============ 11 ============ -->
+<section class="sec">
+<h2>11. Material fuera de la app</h2>
+<table>
+<tr><th style="width:24%">Carpeta o archivo</th><th>Qué es</th></tr>
+<tr><td><code>triptico/triptico.html</code> y <code>.pdf</code></td><td>El tríptico en dos hojas (frente y vuelta), paleta azul. Se genera abriendo el HTML con Edge sin ventana: <code>msedge --headless=new --print-to-pdf=…</code>. Cita las fuentes oficiales y la regla del 22-oct-2026. Una copia está en <code>public/triptico.pdf</code> y <code>dist/triptico.pdf</code>.</td></tr>
+<tr><td><code>qr/qr-pensiones.png / .svg</code></td><td>QR que lleva a la página, <code>https://pensionesley.pensionesgema.com/</code>.</td></tr>
+<tr><td><code>qr/qr-triptico.png / .svg</code></td><td>QR que lleva al PDF del tríptico en GitHub (<code>raw.githubusercontent.com</code>). Solo funciona cuando el PDF esté subido al repositorio.</td></tr>
+<tr><td><code>presentacion/</code></td><td>Las presentaciones de PowerPoint (<code>Pensiones_Ley73_vs_Ley97</code> v1, v2, v3) y los scripts que las generan (<code>generar.mjs</code>, <code>activos.mjs</code>, <code>preview.mjs</code>), con una captura del simulador en <code>img/</code>. Tiene su propio <code>package.json</code> y <code>node_modules</code>.</td></tr>
+<tr><td><code>pension_ley73_vs_ley97.html</code></td><td>La calculadora original del curso. El único uso actual es que <code>paridad.test.js</code> la ejecuta para comparar "Ahorrar".</td></tr>
+<tr><td><code>docs/</code></td><td>Este documento (HTML y PDF).</td></tr>
+</table>
+<h3>Historia del repositorio</h3>
+<p>Repositorio: <code>github.com/florecita984/derivados-pensiones</code> (público, rama <code>main</code>). Los últimos cambios publicados fueron: primer commit → rediseño visual → landing interactiva con la lógica nueva → ajuste del héroe → tríptico, QR y PDF. <b>Las correcciones de la auditoría, los nuevos controles de salario y este documento todavía no están subidos.</b></p>
+</section>
+
+<!-- ============ 12 ============ -->
+<section class="sec">
+<h2>12. Límites y pendientes</h2>
+<h3>Lo que la página no hace (y lo dice)</h3>
+<ul>
+<li>No sabe tu historial real: <b>proyecta</b> tu salario actual con 4.5 % de aumento y supone 52 semanas por año sin interrupciones. Tu promedio real de 250 semanas está en tu Constancia de semanas cotizadas del IMSS.</li>
+<li>No incluye el <b>aguinaldo</b> de un mes que paga la Ley 73.</li>
+<li>No modela la regla del art. 171 de "un año más si pasan seis meses" (la edad es un número entero).</li>
+<li>No suma <b>cuota social</b> ni la subcuenta de <b>vivienda</b> (Infonavit).</li>
+<li>La <b>anualidad</b> y la <b>pensión garantizada</b> de la Ley 97 son aproximaciones. Para dejarlas exactas haría falta la tabla completa del art. 170.</li>
+<li>Con menos de 500 semanas la Ley 73 no paga pensión; la página muestra un monto ilustrativo calculado con 500.</li>
+<li>Modalidad 40: solo a los 65 años, sin asignaciones; el escenario "regla nueva" usa el máximo permitido (la persona puede elegir menos).</li>
+<li>La Ley 73 se asigna por año de inicio (≤ 1996), sin distinguir el 1 de julio de 1997.</li>
+</ul>
+<h3>Pendientes abiertos</h3>
+<table>
+<tr><th style="width:40%">Pendiente</th><th>Por qué</th></tr>
+<tr><td>Confirmar con el IMSS si el 1.11 aplica a toda pensión ≥ 1 salario mínimo o solo al piso</td><td>El decreto de 2004, leído literal, cubre más que el piso; los especialistas lo aplican al piso. La casilla del curso queda como "criterio del curso".</td></tr>
+<tr><td>Cotejar las tablas de cuotas y la pensión garantizada contra el DOF original</td><td>Las leí en fuentes de apoyo (Justia, nóminas, AMCP); no se abrió el decreto del DOF del 16-dic-2020.</td></tr>
+<tr><td>Subir los cambios al repositorio y regenerar el QR del tríptico</td><td>Hasta que se suba, el QR del tríptico no abre el PDF nuevo.</td></tr>
+<tr><td>Revisar el acuerdo de M40 en seis meses</td><td>El propio acuerdo dice que es una medida temporal sujeta a análisis; si cambia, hay que actualizar <code>m40.js</code> y <code>M40_TEXTOS</code>.</td></tr>
+<tr><td>Actualizar cada enero</td><td>UMA y salario mínimo (<code>P</code> en <code>pension.js</code>), semanas mínimas de Ley 97, rango de la garantizada y cuota de M40.</td></tr>
+</table>
+</section>
+
+<!-- ============ 13 ============ -->
+<section class="sec">
+<h2>13. Cómo correrlo y publicarlo</h2>
+<table>
+<tr><th style="width:30%">Comando (PowerShell, dentro de la carpeta)</th><th>Qué hace</th></tr>
+<tr><td><code>npm install</code></td><td>Instala las librerías (solo la primera vez).</td></tr>
+<tr><td><code>npm run dev</code></td><td>Abre la página en <code>http://localhost:5173/</code>. Cada cambio en el código se ve al instante.</td></tr>
+<tr><td><code>npm test</code></td><td>Corre las 14 pruebas.</td></tr>
+<tr><td><code>npm run build</code></td><td>Genera <code>dist/</code>: HTML, JS, CSS, fuentes e imágenes ya optimizados.</td></tr>
+<tr><td><code>npm run preview</code></td><td>Sirve <code>dist/</code> en local para probar el resultado final.</td></tr>
+</table>
+<h3>Para publicarlo</h3>
+<ol>
+<li>Corre <code>npm test</code> y <code>npm run build</code>.</li>
+<li>Sube el <b>contenido de la carpeta <code>dist/</code></b> al servidor del dominio (porque <code>base</code> es <code>'./'</code>, funciona aunque el sitio esté en una subcarpeta).</li>
+<li>Si usas el QR del tríptico, sube también <code>public/triptico.pdf</code> a GitHub (<code>git push</code>), porque el QR apunta a ese archivo.</li>
+</ol>
+<div class="caja"><b>Regla de este proyecto</b>Todo se prueba <b>en local</b>. La producción no se toca desde el entorno de desarrollo: si algo debe verse en el sitio publicado, se avisa y tú subes el archivo.</div>
+<h3>Para cambiar cosas comunes</h3>
+<table>
+<tr><th style="width:36%">Quiero cambiar…</th><th>Edito…</th></tr>
+<tr><td>UMA o salario mínimo del año</td><td><code>P</code> en <code>src/lib/pension.js</code> (todo lo demás se recalcula solo)</td></tr>
+<tr><td>Un texto de la página</td><td><code>src/lib/contenido.js</code></td></tr>
+<tr><td>Las fuentes o sus enlaces</td><td><code>FUENTES</code> en <code>contenido.js</code></td></tr>
+<tr><td>Valores iniciales de los simuladores</td><td><code>CASO</code>, <code>M40</code>, <code>PLAN</code> en <code>src/App.jsx</code></td></tr>
+<tr><td>Rango del control de salario</td><td><code>RANGO_SBC</code> en <code>pension.js</code></td></tr>
+<tr><td>Cuotas por tramo y año</td><td><code>CYV</code> en <code>pension.js</code></td></tr>
+<tr><td>Colores</td><td>Variables al inicio de <code>src/styles.css</code></td></tr>
+<tr><td>Una ilustración</td><td>Reemplaza los dos webp en <code>src/assets/plastilina/</code> y su entrada en <code>index.js</code></td></tr>
+</table>
+</section>
+
+<!-- ============ 14 ============ -->
+<section class="sec">
+<h2>14. Glosario</h2>
+<table>
+<tr><th style="width:24%">Término</th><th>Significado en este proyecto</th></tr>
+<tr><td>IMSS</td><td>Instituto Mexicano del Seguro Social.</td></tr>
+<tr><td>Ley 73</td><td>Régimen anterior (para quien empezó a cotizar antes del 1-jul-1997): la pensión se calcula con tu sueldo y tus semanas, y la paga el IMSS.</td></tr>
+<tr><td>Ley 97</td><td>Régimen actual: la pensión sale de tu ahorro en la Afore; hay una pensión garantizada si el ahorro no alcanza.</td></tr>
+<tr><td>Afore</td><td>Empresa que administra tu cuenta individual de retiro.</td></tr>
+<tr><td>SBC (salario base de cotización)</td><td>El salario con el que el IMSS te tiene registrado, no necesariamente lo que te depositan. Va de 1 salario mínimo a 25 UMA.</td></tr>
+<tr><td>UMA</td><td>Unidad de Medida y Actualización: valor en pesos usado para topes y cuotas ($117.31 diarios en 2026).</td></tr>
+<tr><td>SM</td><td>Salario mínimo general ($315.04 diarios en 2026).</td></tr>
+<tr><td>Semanas cotizadas</td><td>Semanas en que se pagó al IMSS por ti. Ley 73: mínimo 500. Ley 97: 875 en 2026, subiendo a 1,000 en 2031.</td></tr>
+<tr><td>Cuantía básica e incremento anual</td><td>Porcentajes de la tabla del art. 167: el primero es la base de tu pensión sobre tu salario promedio; el segundo se suma por cada año de cotización después de 500 semanas.</td></tr>
+<tr><td>Asignaciones familiares</td><td>Porcentaje extra por esposa(o), hijos o padres que dependen de ti (Ley 73).</td></tr>
+<tr><td>Pensión mínima / garantizada</td><td>Piso de la Ley 73 (1 SM × 1.11) / ayuda del Estado en la Ley 97 si tu ahorro no alcanza.</td></tr>
+<tr><td>Factor de anualidad</td><td>Número entre el que se divide tu ahorro para saber cuánto te toca cada mes.</td></tr>
+<tr><td>Modalidad 40</td><td>Continuación Voluntaria en el Régimen Obligatorio: seguir pagando al IMSS por tu cuenta para sumar semanas y subir tu salario promedio.</td></tr>
+<tr><td>Interés compuesto</td><td>Cuando los intereses también generan intereses.</td></tr>
+<tr><td>Props</td><td>Los datos que un componente de React recibe de quien lo dibuja.</td></tr>
+<tr><td>Estado</td><td>Los datos que React recuerda y que al cambiar vuelven a pintar la pantalla.</td></tr>
+<tr><td>Build</td><td>Convertir el código en los archivos finales (<code>dist/</code>) que entiende un navegador.</td></tr>
+</table>
+<p class="peq">Fin del documento. Si cambias el código, este documento puede quedar desactualizado: la fuente de verdad es siempre el código y las pruebas.</p>
+</section>
+
+</body>
+</html>
