@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Tríptico · Pensión Ley 73 vs Ley 97</title>
+<style>
+@font-face { font-family: 'Jakarta'; src: url('../node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2') format('woff2'); font-weight: 200 800; }
+@font-face { font-family: 'InterV'; src: url('../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2'); font-weight: 100 900; }
+
+@page { size: 11in 8.5in; margin: 0; }
+
+/* Paleta: azul marino profundo, azul brillante y celestes claros */
+:root {
+  --navy: #0b1f4d;
+  --navy-2: #123277;
+  --blue: #1f6df2;
+  --blue-d: #1553c7;
+  --blue-l: #6fa8ff;
+  --sky: #dbe9fb;
+  --sky-2: #eaf2fd;
+  --sky-3: #bcd5f7;
+  --line: #cfe0f6;
+  --mu: #4d628c;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #777; }
+body { font-family: 'InterV', system-ui, sans-serif; color: var(--navy); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.sheet { width: 11in; height: 8.5in; display: grid; grid-template-columns: repeat(3, 1fr); background: #fff; overflow: hidden; page-break-after: always; break-after: page; margin: 0 auto; }
+.sheet:last-child { page-break-after: auto; break-after: auto; }
+.panel { position: relative; overflow: hidden; padding: 30px 30px 26px; display: flex; flex-direction: column; }
+.panel > * { position: relative; z-index: 1; flex-shrink: 0; }
+.panel > .dot { position: absolute; z-index: 0; }
+h1, h2, h3 { font-family: 'Jakarta', sans-serif; font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; }
+.tag { align-self: flex-start; display: inline-block; font: 700 9.5px 'InterV'; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 12px; border-radius: 99px; background: var(--sky); color: var(--blue-d); }
+.back > .tag { align-self: center; }
+.dot { border-radius: 50%; }
+.sq { border-radius: 28px; transform: rotate(45deg); }
+
+/* ============ EXTERIOR · SOLAPA ============ */
+.flap { background: var(--sky-2); }
+.flap h2 { font-size: 34px; margin: 14px 0 6px; }
+.flap .lead { font-size: 12.5px; color: var(--mu); line-height: 1.45; }
+.line { margin: 26px 0 8px; position: relative; }
+.line-bar { height: 18px; border-radius: 99px; display: flex; overflow: hidden; }
+.line-bar i { display: block; height: 100%; }
+.line-bar .a { background: var(--navy); width: 48%; }
+.line-bar .b { background: var(--blue); flex: 1; }
+.line-pin { position: absolute; left: 48%; top: -8px; transform: translateX(-50%); width: 34px; height: 34px; border-radius: 50%; background: #fff; border: 6px solid var(--navy); box-shadow: 0 0 0 3px #fff; }
+.line-cap { display: flex; justify-content: space-between; margin-top: 10px; font-size: 10.5px; color: var(--mu); font-weight: 600; }
+.line-date { text-align: center; margin-top: 12px; }
+.line-date b { display: inline-block; background: var(--navy); color: #fff; font: 800 13px 'Jakarta'; padding: 7px 16px; border-radius: 99px; }
+.who { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+.who div { border-radius: 18px; padding: 14px 14px 15px; color: #fff; }
+.who .w73 { background: var(--navy); }
+.who .w97 { background: var(--blue); }
+.who small { display: block; font-size: 10px; font-weight: 600; opacity: .85; }
+.who strong { display: block; font: 800 24px 'Jakarta'; letter-spacing: -0.04em; margin: 2px 0 4px; }
+.who span { font-size: 11px; line-height: 1.3; display: block; }
+.who span b { font-weight: 800; }
+.datos { margin-top: auto; }
+.datos h3 { font-size: 17px; margin-bottom: 10px; }
+.datos ul { background: #fff; border: 1.5px solid var(--line); border-radius: 20px; padding: 4px 16px; }
+.datos li { list-style: none; display: flex; align-items: baseline; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); }
+.datos li:first-child { border-top: 0; }
+.datos li b { flex: none; width: 78px; font: 800 17px 'Jakarta'; letter-spacing: -0.03em; color: var(--blue); }
+.datos li span { font-size: 11.5px; line-height: 1.3; color: var(--mu); }
+.glo h3 { font-size: 16px; }
+.glo ul { padding: 2px 16px; }
+.glo li { padding: 9px 0; gap: 10px; }
+.glo li b { width: 76px; font: 800 12px 'Jakarta'; letter-spacing: -0.01em; line-height: 1.2; color: var(--blue); }
+.glo li span { font-size: 10.8px; line-height: 1.3; }
+
+/* ============ EXTERIOR · CONTRAPORTADA ============ */
+.back { background: #fff; text-align: center; align-items: center; }
+.back .dot.b1 { width: 190px; height: 190px; background: var(--sky-2); left: -90px; top: -70px; }
+.back h2 { font-size: 33px; margin: 16px 0 8px; }
+.back .lead { font-size: 12.5px; color: var(--mu); max-width: 26ch; line-height: 1.45; }
+.qr { margin: 22px 0 14px; padding: 16px; background: #fff; border: 3px solid var(--navy); border-radius: 28px; box-shadow: 8px 8px 0 var(--sky-3); }
+.qr img { display: block; width: 215px; height: 215px; }
+.url { font: 800 13.5px 'Jakarta'; color: var(--blue); letter-spacing: -0.01em; }
+.back .lista { margin-top: 22px; display: grid; gap: 8px; width: 100%; text-align: left; }
+.back .lista div { display: flex; gap: 10px; align-items: center; background: var(--sky-2); border: 1.5px solid var(--line); border-radius: 14px; padding: 9px 13px; font-size: 11px; font-weight: 600; }
+.back .lista i { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 800 11px 'Jakarta'; font-style: normal; background: var(--blue); color: #fff; }
+.fuentes { margin-top: auto; text-align: left; font-size: 7.6px; line-height: 1.45; color: var(--mu); border-top: 1px solid var(--line); padding-top: 10px; }
+.fuentes b { color: var(--navy); }
+
+/* ============ EXTERIOR · PORTADA ============ */
+.cover { background: var(--sky-2); }
+.cover .sq.s1 { width: 220px; height: 220px; background: var(--sky-3); right: -105px; top: -105px; }
+.cover .sq.s2 { width: 150px; height: 150px; background: var(--blue); right: -80px; top: -50px; }
+.cover .sq.s3 { width: 210px; height: 210px; background: var(--sky); right: -120px; bottom: 60px; }
+.brandrow { display: flex; align-items: center; gap: 10px; font: 800 14px 'Jakarta'; letter-spacing: -0.02em; color: var(--navy); }
+.brandrow svg { width: 32px; height: 32px; }
+.cover .tag { margin-top: 36px; }
+.cover h1 { font-size: 52px; letter-spacing: -0.05em; margin: 16px 0 0; line-height: .98; color: var(--navy); }
+.cover h1 em { font-style: normal; color: var(--blue); }
+.cover .sub { margin-top: 14px; font-size: 14px; color: var(--mu); line-height: 1.4; max-width: 24ch; font-weight: 500; }
+.duel { position: relative; margin-top: 30px; }
+.duel .c { border-radius: 22px; padding: 16px 20px 18px; color: #fff; box-shadow: 0 16px 22px -14px rgba(11,31,77,.55); }
+.duel .c1 { background: var(--navy); transform: rotate(-2.5deg); width: 88%; }
+.duel .c2 { background: var(--blue); transform: rotate(2deg); width: 88%; margin: -6px 0 0 auto; }
+.duel .t { display: flex; justify-content: space-between; align-items: baseline; font: 800 13px 'Jakarta'; }
+.duel .t small { font: 600 9.5px 'InterV'; opacity: .85; }
+.duel .n { font: 800 36px 'InterV'; letter-spacing: -0.045em; margin-top: 4px; line-height: 1; }
+.duel .n small { font-size: 12px; letter-spacing: 0; font-weight: 600; opacity: .85; }
+.duel .vs { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 3; width: 38px; height: 38px; border-radius: 50%; background: #fff; color: var(--navy); display: grid; place-items: center; font: 800 11px 'Jakarta'; border: 3px solid var(--sky-2); box-shadow: 0 4px 10px rgba(11,31,77,.25); }
+.cover .nota { margin-top: 12px; font-size: 9.5px; color: var(--mu); text-align: center; }
+.cover .foot { margin-top: auto; background: var(--navy); border-radius: 18px; padding: 13px 16px 14px; }
+.cover .foot b { display: block; font: 800 12px 'Jakarta'; letter-spacing: 0; color: var(--blue-l); margin-bottom: 4px; }
+.cover .foot span { font-size: 9.5px; color: #dbe7ff; line-height: 1.5; display: block; }
+
+/* ============ INTERIOR ============ */
+.ley { color: #fff; }
+.ley.l73 { background: var(--navy); }
+.ley.l97 { background: var(--blue); }
+.ley .sq { width: 210px; height: 210px; right: -100px; top: -100px; background: rgba(255,255,255,.1); }
+.ley .tag { background: rgba(255,255,255,.18); color: #fff; }
+.ley h2 { font-size: 78px; letter-spacing: -0.06em; margin: 22px 0 6px; color: #fff; }
+.ley .lema { font: 800 19px 'Jakarta'; letter-spacing: -0.03em; }
+.ley .def { margin-top: 14px; font-size: 13px; line-height: 1.5; opacity: .95; }
+.ley ul { margin-top: 22px; display: grid; }
+.ley li { list-style: none; display: grid; grid-template-columns: 66px 1fr; gap: 12px; align-items: center; padding: 15px 0; border-top: 1px solid rgba(255,255,255,.25); }
+.ley li .k { font: 800 21px 'Jakarta'; letter-spacing: -0.04em; line-height: 1; white-space: nowrap; }
+.ley.l73 li .k { color: var(--blue-l); }
+.ley li .k small { display: block; font: 700 8px 'InterV'; letter-spacing: .06em; text-transform: uppercase; opacity: .85; margin-top: 2px; color: #fff; }
+.ley li span { font-size: 12.8px; line-height: 1.38; }
+.ley li span b { font-weight: 800; }
+.ley .ex { margin-top: auto; background: #fff; color: var(--navy); border-radius: 16px; padding: 10px 14px 11px; }
+.ley .ex small { font: 800 8.5px 'InterV'; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); }
+.ley .ex p { margin-top: 4px; font-size: 11.5px; line-height: 1.4; }
+.ley .ex b { font-weight: 800; }
+.ley .aport { margin-top: 10px; background: rgba(255,255,255,.14); border-radius: 18px; padding: 12px 16px 6px; }
+.ley .aport h3 { font-size: 13.5px; letter-spacing: -0.02em; margin-bottom: 4px; color: #fff; }
+.ley .aport .row { display: grid; grid-template-columns: 58px 1fr; gap: 8px; padding: 5px 0; border-top: 1px solid rgba(255,255,255,.25); font-size: 10.8px; line-height: 1.3; align-items: baseline; }
+.ley .aport .row b { font: 800 11.5px 'Jakarta'; }
+.ley .aport .row strong { font-weight: 800; }
+
+.ley .eq { margin-top: auto; background: rgba(255,255,255,.14); border-radius: 18px; padding: 16px 18px; font-size: 13px; line-height: 1.4; font-weight: 600; }
+
+.tiempo { background: var(--sky-2); }
+.tiempo h2 { font-size: 31px; margin: 12px 0 5px; }
+.tiempo .lead { font-size: 12px; color: var(--mu); line-height: 1.45; }
+.cost { margin-top: 16px; background: var(--navy); color: #fff; border-radius: 26px; padding: 18px 20px 20px; position: relative; overflow: hidden; }
+.cost::after { content: ''; position: absolute; right: -40px; bottom: -60px; width: 130px; height: 130px; border-radius: 28px; transform: rotate(45deg); background: var(--navy-2); }
+.cost > * { position: relative; z-index: 1; }
+.cost small { font: 700 9px 'InterV'; letter-spacing: .12em; text-transform: uppercase; color: var(--blue-l); }
+.cost .n { font: 800 46px 'InterV'; letter-spacing: -0.055em; color: #fff; line-height: 1; margin: 8px 0 8px; }
+.cost p { font-size: 11px; color: #c9d9f7; line-height: 1.4; }
+.cost p b { color: #fff; }
+.sc { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.sc div { background: #fff; border: 1.5px solid var(--line); border-radius: 16px; padding: 10px 13px 11px; border-top: 5px solid var(--navy); }
+.sc div:last-child { border-top-color: var(--blue); }
+.sc small { display: block; font-size: 9.5px; font-weight: 700; color: var(--mu); }
+.sc b { font: 800 14.5px 'InterV'; letter-spacing: -0.03em; }
+.m40 { margin-top: auto; background: #fff; border: 1.5px solid var(--line); border-left: 6px solid var(--blue); border-radius: 20px; padding: 14px 18px 15px; }
+.m40 .tag { font-size: 8.5px; padding: 4px 10px; }
+.m40 h3 { font-size: 19px; margin: 8px 0 6px; }
+.m40 p { font-size: 11px; line-height: 1.4; color: var(--mu); }
+.m40 b { font-weight: 800; color: var(--navy); }
+.hab { margin-top: 12px; }
+.hab h3 { font-size: 15px; margin-bottom: 8px; }
+.hab div { display: flex; gap: 10px; align-items: center; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 7px 11px; margin-top: 5px; }
+.hab i { flex: none; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font: 800 10px 'Jakarta'; font-style: normal; background: var(--blue); color: #fff; }
+.hab span { font-size: 10.5px; line-height: 1.3; color: var(--mu); }
+.hab b { color: var(--navy); }
+.tip { margin-top: 12px; display: flex; align-items: center; gap: 12px; }
+.tip img { width: 62px; height: 62px; border-radius: 10px; border: 2px solid var(--navy); padding: 3px; background: #fff; flex: none; }
+.tip span { font-size: 10.5px; line-height: 1.35; font-weight: 600; }
+.tip span b { color: var(--blue); font-weight: 800; }
+
+@media screen { .sheet { margin-bottom: 18px; } }
+</style>
+</head>
+<body>
+
+<!-- =========================== HOJA 1 · EXTERIOR =========================== -->
+<section class="sheet" id="exterior">
+
+  <!-- Solapa interior (queda doblada hacia adentro) -->
+  <div class="panel flap">
+    <span class="tag">Empieza aquí</span>
+    <h2>¿Qué ley te toca?</h2>
+    <p class="lead">Depende de una sola fecha: cuándo empezaste a cotizar en el IMSS.</p>
+
+    <div class="line" aria-hidden="true">
+      <div class="line-bar"><i class="a"></i><i class="b"></i></div>
+      <span class="line-pin"></span>
+    </div>
+    <div class="line-date"><b>1 de julio de 1997</b></div>
+    <div class="line-cap"><span>Antes</span><span>Desde</span></div>
+
+    <div class="who">
+      <div class="w73"><small>Empezaste antes</small><strong>Ley 73</strong><span>Tu pensión sale de tu <b>salario</b>.</span></div>
+      <div class="w97"><small>Empezaste desde</small><strong>Ley 97</strong><span>Tu pensión sale de tu <b>ahorro</b> en la Afore.</span></div>
+    </div>
+
+    <div class="datos glo">
+      <h3>Palabras clave, sin tecnicismos</h3>
+      <ul>
+        <li><b>Afore</b><span>La cuenta donde se junta tu ahorro para el retiro. La administra una empresa y le gana intereses.</span></li>
+        <li><b>Semanas cotizadas</b><span>Las semanas en que tu patrón (o tú) pagó al IMSS por ti.</span></li>
+        <li><b>Sueldo base de cotización</b><span>El sueldo con el que el IMSS te registra. Tiene tope de 25 UMA (unos $89,000 al mes).</span></li>
+        <li><b>UMA</b><span>Un valor en pesos que el gobierno usa para topes y cuotas. En 2026 vale $117.31 al día.</span></li>
+        <li><b>Pensión garantizada</b><span>La pensión mínima que el gobierno completa si tu Afore no alcanza.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Contraportada -->
+  <div class="panel back">
+    <span class="dot b1"></span>
+    <span class="tag">Pruébalo tú</span>
+    <h2>Simula tu pensión</h2>
+    <p class="lead">Escanea el código y compara las dos leyes con tus propios datos.</p>
+
+    <div class="qr"><img src="../qr/qr-pensiones.svg" alt="Código QR de la página"></div>
+    <div class="url">pensionesley.pensionesgema.com</div>
+
+    <div class="lista">
+      <div><i>1</i>Escribe tu edad, sueldo y año en que empezaste a cotizar</div>
+      <div><i>2</i>Compara la pensión de la Ley 73 y la Ley 97</div>
+      <div><i>3</i>Juega con “Ahorra” y descubre cuánto cuesta esperar</div>
+    </div>
+
+    <div class="fuentes">
+      <b>Fuentes.</b> Ley del Seguro Social, arts. 167 y 168 (Ley 73) y 170 (Ley 97). Acuerdo del Consejo Técnico del IMSS publicado en el DOF el 21-oct-2026 (Modalidad 40). UMA 2026: INEGI, DOF del 9-ene-2026. Aportaciones a la Afore: porcentajes sobre el salario base de cotización; la del patrón varía entre 3.150% y 7.513% en 2026 según el rango salarial. Material y especificaciones del curso.
+      <b>Simulación didáctica: las cifras son estimaciones y no constituyen asesoría financiera.</b>
+    </div>
+  </div>
+
+  <!-- Portada -->
+  <div class="panel cover">
+    <span class="dot sq s1"></span><span class="dot sq s2"></span><span class="dot sq s3"></span>
+    <div class="brandrow">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="11" fill="#0b1f4d"/><rect x="8" y="17" width="8" height="11" rx="2.4" fill="#6fa8ff"/><rect x="20" y="9" width="8" height="19" rx="2.4" fill="#fff"/></svg>
+      Pensiones IMSS
+    </div>
+
+    <span class="tag">Ley 73 vs Ley 97</span>
+    <h1>Dos leyes. Dos pensiones muy <em>distintas.</em></h1>
+    <p class="sub">Descubre cuál te toca y cuánto podrías recibir.</p>
+
+    <div class="duel">
+      <div class="c c1"><div class="t"><span>Ley 73</span><small>Empezó en 1995</small></div><div class="n">$42,349 <small>al mes</small></div></div>
+      <span class="vs">VS</span>
+      <div class="c c2"><div class="t"><span>Ley 97</span><small>Empezó en 2005</small></div><div class="n">$20,061 <small>al mes</small></div></div>
+    </div>
+    <p class="nota">Mismo sueldo ($20,000) y retiro a los 65. Ejemplo del simulador.</p>
+
+    <div class="foot">
+      <b>Tema 9 · Equipo 2</b>
+      <span>Lucía Cárdenas · Flor Martínez · Carlos Contreras<br>Carlos Ipiña · María José Meza</span>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== HOJA 2 · INTERIOR =========================== -->
+<section class="sheet" id="interior">
+
+  <!-- Ley 73 -->
+  <div class="panel ley l73">
+    <span class="dot sq"></span>
+    <span class="tag">Antes del 1 de julio de 1997</span>
+    <h2>Ley 73</h2>
+    <div class="lema">Se basa en tu salario</div>
+    <p class="def">El IMSS te paga una pensión calculada con tu sueldo de los últimos 5 años y tus semanas trabajadas. Es como un sueldo de jubilado que se paga entre todos.</p>
+    <ul>
+      <li><div class="k">5<small>años</small></div><span>Se usa el <b>sueldo promedio de tus últimos 5 años</b> de cotización.</span></li>
+      <li><div class="k">500<small>sem.</small></div><span>Pide un mínimo de <b>500 semanas cotizadas</b> (unos 9 años y medio de trabajo).</span></li>
+      <li><div class="k">65<small>años</small></div><span>Retiro a los 65. Desde los 60 se puede, con <b>5% menos por cada año</b> que te adelantes.</span></li>
+      <li><div class="k">1<small>S.M.</small></div><span>La pensión <b>nunca baja de 1 salario mínimo</b>. Con pareja dependiente suma 15%.</span></li>
+    </ul>
+    <div class="ex">
+      <small>Ejemplo</small>
+      <p>Empezó en <b>1995</b> (45 años, $20,000 al mes, retiro a los 65): unos <b>$42,349 al mes</b>.</p>
+    </div>
+  </div>
+
+  <!-- Ley 97 -->
+  <div class="panel ley l97">
+    <span class="dot sq"></span>
+    <span class="tag">Desde el 1 de julio de 1997</span>
+    <h2>Ley 97</h2>
+    <div class="lema">Se basa en tu ahorro</div>
+    <p class="def">Tu pensión sale de tu propio ahorro en la Afore. Entre más ahorras y más años pasan, más crece.</p>
+    <ul>
+      <li><div class="k">Afore<small>cuenta</small></div><span>La pensión viene de <b>lo acumulado en tu cuenta</b> y sus rendimientos.</span></li>
+      <li><div class="k">875<small>sem.</small></div><span>Pide <b>875 semanas en 2026</b>; sube 25 por año hasta llegar a 1,000.</span></li>
+      <li><div class="k">60–65<small>años</small></div><span>Retiro <b>entre los 60 y los 65</b>; mientras más tarde, más ahorro.</span></li>
+      <li><div class="k">Mín.<small>garantiz.</small></div><span>Si tu ahorro es muy bajo, el gobierno <b>garantiza una pensión mínima</b>.</span></li>
+    </ul>
+    <div class="aport">
+      <h3>¿Quién aporta a tu Afore?</h3>
+      <div class="row"><b>Tú</b><span><strong>1.125%</strong> de tu sueldo</span></div>
+      <div class="row"><b>Tu patrón</b><span><strong>2%</strong> retiro + <strong>3.150% a 7.513%</strong> (según tu sueldo y el año)</span></div>
+      <div class="row"><b>Gobierno</b><span><strong>Cuota social</strong> si cumples los requisitos</span></div>
+    </div>
+    <div class="ex">
+      <small>Ejemplo</small>
+      <p>Empezó en <b>2005</b> (45 años, $20,000 al mes, retiro a los 65): unos <b>$20,061 al mes</b>.</p>
+    </div>
+  </div>
+
+  <!-- El tiempo es tu aliado -->
+  <div class="panel tiempo">
+    <span class="tag">Interés compuesto</span>
+    <h2>¿Cuánto te cuesta esperar?</h2>
+    <p class="lead">Tres meses parecen poco. Los intereses ganan intereses.</p>
+
+    <div class="cost">
+      <small>Esperar 3 meses te quita</small>
+      <div class="n">$44,420</div>
+      <p>a los 65 años, por dejar de aportar solo <b>$3,000</b>.<br>Ejemplo: $1,000 al mes desde los 25, con 7% anual supuesto.</p>
+    </div>
+
+    <div class="sc">
+      <div><small>Empiezas hoy</small><b>$2,471,542</b></div>
+      <div><small>Empiezas en 3 meses</small><b>$2,427,122</b></div>
+    </div>
+
+    <div class="m40">
+      <span class="tag">Modalidad 40 · nuevas reglas</span>
+      <h3>Seguir cotizando por tu cuenta</h3>
+      <p>Desde el <b>22 de octubre de 2026</b> te registras con tu <b>último sueldo</b> (o ese más 1 UMA). Ya no hay fechas pasadas y el trámite es digital.</p>
+    </div>
+
+    <div class="hab">
+      <h3>3 hábitos fáciles</h3>
+      <div><i>1</i><span><b>Empieza hoy</b>, aunque sea con poco.</span></div>
+      <div><i>2</i><span><b>Revisa tus datos:</b> tus semanas en el IMSS y tu saldo en tu Afore.</span></div>
+      <div><i>3</i><span><b>Sé constante:</b> el tiempo hace crecer tu ahorro.</span></div>
+    </div>
+
+
+  </div>
+</section>
+
+</body>
+</html>
